@@ -21,32 +21,27 @@ class GetStudentDetails with ApiHelper {
       },
       headers: headers,
     );
-    print('before');
     print('${response.statusCode}'); // 200
     var resultCode = jsonDecode(response.body)['resultCode'];
-    print('after');
     print('$resultCode');
     if (resultCode == 200) {
-      // var jsonResponse = jsonDecode(response.body)['data'] as List;
-      // var jsonResponseData = jsonResponse.map((obj) => Student.fromJson(obj)).toList();
-      // var message = jsonDecode(response.body)['message'];
-      // var otpCode = jsonDecode(response.body)['otp'];
-      // showSnackBar(
-      //   context,
-      //   message: message,
-      // );
-      // showSnackBar(
-      //   context,
-      //   message: 'Verification Code: $otpCode',
-      // );
+      var jsonResponse = jsonDecode(response.body)['data'] as List;
+      var jsonResponseData = jsonResponse.map((obj) => Student.fromJson(obj)).toList();
+      var message = jsonDecode(response.body)['message'];
+      var otpCode = jsonDecode(response.body)['otp'];
+      showSnackBar(
+        context,
+        message: message,
+      );
+      print('$otpCode');
       return true;
     } else if (resultCode == 500) {
-      // var message = jsonDecode(response.body)['message'];
-      // showSnackBar(
-      //   context,
-      //   message: message,
-      //   error: true,
-      // );
+      var message = jsonDecode(response.body)['message'];
+      showSnackBar(
+        context,
+        message: message,
+        error: true,
+      );
     } else {
       showSnackBar(
         context,

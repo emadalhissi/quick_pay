@@ -160,7 +160,7 @@ class _LoginUIState extends State<LoginUI> {
   Future<void> performLogin() async {
     if (checkData()) {
       await login();
-      print('check');
+      print('check after login');
     }
   }
 
