@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
+import 'package:quick_pay/Auth/Verification/UI/verification_ui.dart';
 import 'package:quick_pay/BottomNavigation/Account/favourites_page.dart';
 import 'package:quick_pay/BottomNavigation/Account/help_page.dart';
 import 'package:quick_pay/BottomNavigation/Account/language_choose.dart';
@@ -42,6 +44,7 @@ class PageRoutes {
   static const String tncPage = 'tnc_page';
   static const String searchPage = 'search_page';
   static const String chooseLanguage = 'choose_language';
+  static const String verificationPage = 'verification_page';
 
   Map<String, WidgetBuilder> routes() {
     return {
@@ -66,6 +69,7 @@ class PageRoutes {
       tncPage: (context) => TncPage(),
       searchPage: (context) => SearchPage(),
       chooseLanguage: (context) => ChooseLanguage(),
+      // verificationPage: (context) => VerificationUI(),
     };
   }
 }

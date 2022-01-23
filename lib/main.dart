@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quick_pay/Auth/login_navigator.dart';
+import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/language_cubit.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +50,7 @@ class QuickPay extends StatelessWidget {
           locale: appLocale,
           debugShowCheckedModeBanner: false,
           theme: appTheme,
+          // home: SharedPreferencesController().loggedIn ? AppNavigation() : LoginNavigator(),
           home: LoginNavigator(),
           routes: PageRoutes().routes(),
         );

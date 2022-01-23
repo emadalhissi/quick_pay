@@ -1,10 +1,14 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verification_interactor.dart';
+import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/entry_field.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/colors.dart';
+import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class VerificationUI extends StatefulWidget {
   final VerificationInteractor verificationInteractor;
@@ -15,7 +19,23 @@ class VerificationUI extends StatefulWidget {
   VerificationUI(this.verificationInteractor);
 }
 
-class _VerificationUIState extends State<VerificationUI> {
+class _VerificationUIState extends State<VerificationUI> with ApiHelper {
+  late TextEditingController _codeEditingController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _codeEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _codeEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
@@ -51,7 +71,12 @@ class _VerificationUIState extends State<VerificationUI> {
                   SizedBox(
                     height: 15,
                   ),
-                  EntryField(locale.enterCodeHere, null),
+                  EntryField(
+                    locale.enterCodeHere,
+                    null,
+                    controller: _codeEditingController,
+                    formatter: '0-9',
+                  ),
                   SizedBox(
                     height: 25,
                   ),
@@ -60,7 +85,8 @@ class _VerificationUIState extends State<VerificationUI> {
                         vertical: 16.0, horizontal: 8),
                     child: CustomButton(
                       locale.submit!.toUpperCase(),
-                      onTap: () {
+                      onTap: () async {
+                        await performVerify();
                         widget.verificationInteractor.verificationDone();
                       },
                     ),
@@ -87,5 +113,55 @@ class _VerificationUIState extends State<VerificationUI> {
         slideCurve: Curves.linearToEaseOut,
       ),
     );
+  }
+
+  Future<void> performVerify() async {
+    if (checkData()) {
+      await verify();
+    }
+  }
+
+  bool checkData() {
+    if (_codeEditingController.text.isEmpty) {
+      showSnackBar(
+        context,
+        message: 'Please Enter Code!',
+        error: true,
+      );
+      return false;
+    } else if(_codeEditingController.text.length != 4) {
+      showSnackBar(
+        context,
+        message: 'Number must be 4 digits!',
+        error: true,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> verify() async{
+
+    var code = SharedPreferencesController().getOtpCode.toString();
+    bool status = code == _codeEditingController.text ? true : false;
+    if (status) {
+      await SharedPreferencesController().login();
+      // showSnackBar(context, message: 'Thank you for coming back!');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AppNavigation(
+            // () =>
+            //     Navigator.popAndPushNamed(context, PageRoutes.bottomNavigation),
+          ),
+        ),
+      );
+    } else {
+      showSnackBar(
+        context,
+        message: 'Wrong code!',
+        error: true,
+      );
+    }
   }
 }

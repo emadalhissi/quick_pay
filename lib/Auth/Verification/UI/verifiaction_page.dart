@@ -3,7 +3,7 @@ import 'package:quick_pay/Auth/Verification/UI/verification_interactor.dart';
 import 'package:quick_pay/Auth/Verification/UI/verification_ui.dart';
 
 class VerificationPage extends StatefulWidget {
-  final VoidCallback onVerificationDone;
+  final VoidCallback? onVerificationDone;
 
   VerificationPage(this.onVerificationDone);
 
@@ -20,7 +20,7 @@ class _VerificationPageState extends State<VerificationPage>
 
   @override
   void verificationDone() {
-    widget.onVerificationDone();
+    widget.onVerificationDone!();
   }
 
   @override

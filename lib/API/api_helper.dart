@@ -10,8 +10,14 @@ mixin ApiHelper {
       SnackBar(
         content: Text(message),
         backgroundColor: error ? Colors.red : Colors.green,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
         dismissDirection: DismissDirection.horizontal,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height - 100,
+          right: 20,
+          left: 20,
+        ),
       ),
     );
   }
@@ -19,7 +25,7 @@ mixin ApiHelper {
   Map<String, String> get headers {
     var headers = {
       'Accept': 'application/json',
-      // 'Accept': '*/*',
+      'Content-Type': 'application/json',
     };
     // if(SharedPreferencesController().loggedIn) {
     //   headers['Authorization'] = SharedPreferencesController().getToken;

@@ -13,11 +13,14 @@ class AuthApiController with ApiHelper {
     var url = Uri.parse(ApiSettings.getStdDetailsByMobile);
     var response = await http.post(
       url,
-      body: {
-        'mobile_number': mobile,
-      },
+      body: jsonEncode(
+        {
+          'mobile_number': mobile,
+        },
+      ),
       headers: headers,
     );
+    var resultCode = jsonDecode(response.body)['resultCode'];
     if(response.statusCode == 200) {
       var loginResponse = jsonDecode(response.body);
     }

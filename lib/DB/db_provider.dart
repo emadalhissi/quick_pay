@@ -15,7 +15,7 @@ class DBProvider {
 
   DBProvider._internal();
 
-  Database get database => _database;
+  Database get getDatabase => _database;
 
   Future<Database> initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
@@ -28,8 +28,9 @@ class DBProvider {
       onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE STUDENTS ("
             "id integer PRIMARY KEY AUTOINCREMENT,"
-            "stdName TEXT,"
-            "school_code TEXT,"
+            "studentId TEXT NOT NULL,"
+            "stdname TEXT NOT NULL,"
+            "school_code TEXT NOT NULL,"
             "school_name NULL,"
             "school_logo NULL,"
             ")");

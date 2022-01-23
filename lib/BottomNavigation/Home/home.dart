@@ -193,7 +193,8 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            locale.quickRechargesBillPays!,
+                            // locale.quickRechargesBillPays!,
+                            'Student Details',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!

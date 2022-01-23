@@ -1,8 +1,13 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
 import 'package:quick_pay/API/Controllers/get_students_details.dart';
+import 'package:quick_pay/API/api_helper.dart';
+import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/assets.dart';
 
 import '../../../Theme/colors.dart' show transparentColor;
@@ -17,7 +22,7 @@ class LoginUI extends StatefulWidget {
   _LoginUIState createState() => _LoginUIState();
 }
 
-class _LoginUIState extends State<LoginUI> {
+class _LoginUIState extends State<LoginUI> with ApiHelper {
   late TextEditingController _mobileEditingController;
   late TextEditingController _passwordEditingController;
 
@@ -73,6 +78,9 @@ class _LoginUIState extends State<LoginUI> {
                       scale: 2.5,
                     ),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                  ],
                 ),
                 // Material(
                 //   color: theme.scaffoldBackgroundColor,
@@ -111,7 +119,7 @@ class _LoginUIState extends State<LoginUI> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: InkWell(
-                    onTap: () async  {
+                    onTap: () async {
                       await performLogin();
                     },
                     child: CustomButton(
@@ -160,24 +168,40 @@ class _LoginUIState extends State<LoginUI> {
   Future<void> performLogin() async {
     if (checkData()) {
       await login();
-      print('check after login');
     }
   }
 
   bool checkData() {
-    if (_mobileEditingController.text.isNotEmpty) {
-      return true;
+    if (_mobileEditingController.text.isEmpty) {
+      showSnackBar(
+        context,
+        message: 'Please Enter Number!',
+        error: true,
+      );
+      return false;
+    } else if(_mobileEditingController.text.length != 10) {
+      showSnackBar(
+        context,
+        message: 'Number must be 10 digits!',
+        error: true,
+      );
+      return false;
     }
-    return false;
+    return true;
   }
 
   Future<void> login() async {
-    print('check from login');
     bool status = await GetStudentDetails()
         .getStudents(context, mobile: _mobileEditingController.text);
-    if(status) {
+    if (status) {
       // SharedPreferencesController().login();
-      // TODO: Navigate to verification
+      print('LOGIN DONE');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerificationPage(null),
+        ),
+      );
     }
   }
 }
