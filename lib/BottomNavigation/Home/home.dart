@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,7 +10,9 @@ import 'package:quick_pay/Components/custom_offers_container.dart';
 import 'package:quick_pay/Components/custom_options_grid_view.dart';
 import 'package:quick_pay/Components/quick_pay_text.dart';
 import 'package:quick_pay/Components/winter_sale_widget.dart';
+import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/style.dart';
 
@@ -22,10 +25,31 @@ class Payment {
   String image;
   String? title;
   Function onTap;
+
   Payment(this.image, this.title, this.onTap);
 }
 
+class AddStudent {
+  String image;
+  String? title;
+  Function onTap;
+
+  AddStudent(this.image, this.title, this.onTap);
+}
+
 class _HomePageState extends State<HomePage> {
+  final StudentDbController _DBProviderController = StudentDbController();
+  List<Student> _studentsList = <Student>[];
+  late Future<List<Student>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _DBProviderController.read();
+  }
+
+  // List<Student> st = [];
+  // st = await _DBProviderController.read();
   static final AdRequest request = AdRequest(
     keywords: <String>['foo', 'bar'],
     contentUrl: 'http://foo.com/bar.html',
@@ -80,20 +104,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    List<Payment> _paymentOptions = [
-      Payment('assets/icons/ic_pay.png', locale.payOrSend, () {
-        Navigator.pushNamed(context, PageRoutes.scanPage);
-      }),
-      Payment('assets/icons/ic_add money.png', locale.addMoney, () {
-        Navigator.pushNamed(context, PageRoutes.addMoneyPage);
-      }),
-      Payment('assets/icons/ic_get payment.png', locale.getPayment, () {
-        Navigator.pushNamed(context, PageRoutes.getPaymentPage);
-      }),
-      Payment('assets/icons/ic_transactions.png', locale.transactions, () {
-        Navigator.pushNamed(context, PageRoutes.transactionPage);
-      }),
+    // List<Payment> _paymentOptions = [
+    //   Payment('assets/icons/ic_pay.png', locale.payOrSend, () {
+    //     Navigator.pushNamed(context, PageRoutes.scanPage);
+    //   }),
+    //   Payment('assets/icons/ic_add money.png', locale.addMoney, () {
+    //     Navigator.pushNamed(context, PageRoutes.addMoneyPage);
+    //   }),
+    //   Payment('assets/icons/ic_get payment.png', locale.getPayment, () {
+    //     Navigator.pushNamed(context, PageRoutes.getPaymentPage);
+    //   }),
+    //   Payment('assets/icons/ic_transactions.png', locale.transactions, () {
+    //     Navigator.pushNamed(context, PageRoutes.transactionPage);
+    //   }),
+    // ];
+    List<AddStudent> _addStudentOptions = [
+      AddStudent(
+        'assets/icons/ic_add_student.png',
+        'Add Student',
+        () {
+          print('Add Student Clicked!');
+        },
+      ),
     ];
+
     List<Payment> _quickPays = [
       Payment('assets/icons/ic_recharge.png', locale.recharge, () {
         Navigator.pushNamed(context, PageRoutes.phoneRechargePage);
@@ -101,27 +135,33 @@ class _HomePageState extends State<HomePage> {
       Payment('assets/icons/ic_electricity.png', locale.electricity, () {}),
       Payment('assets/icons/ic_train.png', locale.trainTicket, () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BookTicket(
-                      initialIndexTab: 0,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookTicket(
+              initialIndexTab: 0,
+            ),
+          ),
+        );
       }),
       Payment('assets/icons/ic_flight.png', locale.flight, () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BookTicket(
-                      initialIndexTab: 1,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookTicket(
+              initialIndexTab: 1,
+            ),
+          ),
+        );
       }),
       Payment('assets/icons/ic_bus.png', locale.bus, () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BookTicket(
-                      initialIndexTab: 2,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookTicket(
+              initialIndexTab: 2,
+            ),
+          ),
+        );
       }),
       Payment('assets/icons/ic_dth.png', locale.dth, () {}),
       Payment('assets/icons/ic_broadband.png', locale.broadband, () {}),
@@ -143,9 +183,10 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       height: 180,
                       decoration: BoxDecoration(
-                          gradient: linearGrad,
-                          borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(8))),
+                        gradient: linearGrad,
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(8)),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
@@ -159,20 +200,21 @@ class _HomePageState extends State<HomePage> {
                                   context, PageRoutes.searchPage);
                             },
                             decoration: InputDecoration(
-                                filled: true,
-                                fillColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12.0, horizontal: 10),
-                                  child: QuickPayText(),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide.none)),
+                              filled: true,
+                              fillColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 10),
+                                child: QuickPayText(),
+                              ),
+                              suffixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: BorderSide.none),
+                            ),
                           ),
-                          CustomGridView(_paymentOptions),
+                          CustomGridView(_addStudentOptions),
                         ],
                       ),
                     ),
@@ -198,12 +240,109 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!
-                                .copyWith(fontSize: 16),
+                                .copyWith(fontSize: 18),
                           ),
                           SizedBox(
                             height: 8,
                           ),
-                          CustomGridView(_quickPays)
+                          // CustomGridView(_quickPays),
+                          SizedBox(
+                            height: 180,
+                            child: FutureBuilder<List<Student>>(
+                              future: _future,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data!.isNotEmpty) {
+                                  _studentsList = snapshot.data ?? [];
+                                }
+                                return ListView.builder(
+                                  itemCount: _studentsList.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsetsDirectional.only(
+                                          end: 10),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                50,
+                                        height: 180,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      _studentsList[index]
+                                                          .stdname,
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                            Color(0xff2372ba),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Text(
+                                                      'ID: ' +
+                                                          _studentsList[index]
+                                                              .studentId,
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                            Color(0xff050505),
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      _studentsList[index]
+                                                          .schoolName,
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                            Color(0xff050505),
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                  ],
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: Color(0xff737373),
+                                                size: 36,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -212,58 +351,58 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 8,
                 ),
-                if (_anchoredBanner != null)
-                  Container(
-                    width: _anchoredBanner!.size.width.toDouble(),
-                    height: _anchoredBanner!.size.height.toDouble(),
-                    child: AdWidget(ad: _anchoredBanner!),
-                  ),
-                SizedBox(
-                  height: 8,
-                ),
-                Stack(
-                  children: [
-                    Image.asset(
-                      'assets/imgs/Layer 1194.png',
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fill,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8, right: 8, top: 18, bottom: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            locale.saveOnBillPayments!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(fontSize: 16),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          SizedBox(
-                            height: 135,
-                            child: ListView.builder(
-                                // padding: EdgeInsets.symmetric(horizontal: 8),
-                                physics: BouncingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 3,
-                                itemBuilder: (context, index) {
-                                  return CustomOffersContainer();
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 12,
-                ),
+                // if (_anchoredBanner != null)
+                //   Container(
+                //     width: _anchoredBanner!.size.width.toDouble(),
+                //     height: _anchoredBanner!.size.height.toDouble(),
+                //     child: AdWidget(ad: _anchoredBanner!),
+                //   ),
+                // SizedBox(
+                //   height: 8,
+                // ),
+                // Stack(
+                //   children: [
+                //     Image.asset(
+                //       'assets/imgs/Layer 1194.png',
+                //       height: 200,
+                //       width: MediaQuery.of(context).size.width,
+                //       fit: BoxFit.fill,
+                //     ),
+                //     Padding(
+                //       padding: const EdgeInsets.only(
+                //           left: 8, right: 8, top: 18, bottom: 8),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //             locale.saveOnBillPayments!,
+                //             style: Theme.of(context)
+                //                 .textTheme
+                //                 .bodyText1!
+                //                 .copyWith(fontSize: 16),
+                //           ),
+                //           SizedBox(
+                //             height: 8,
+                //           ),
+                //           SizedBox(
+                //             height: 135,
+                //             child: ListView.builder(
+                //                 // padding: EdgeInsets.symmetric(horizontal: 8),
+                //                 physics: BouncingScrollPhysics(),
+                //                 scrollDirection: Axis.horizontal,
+                //                 itemCount: 3,
+                //                 itemBuilder: (context, index) {
+                //                   return CustomOffersContainer();
+                //                 }),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 12,
+                // ),
                 WinterSaleBanner(),
                 SizedBox(
                   height: 30,

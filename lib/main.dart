@@ -53,8 +53,8 @@ class QuickPay extends StatelessWidget {
           locale: appLocale,
           debugShowCheckedModeBanner: false,
           theme: appTheme,
-          // home: SharedPreferencesController().loggedIn ? AppNavigation() : LoginNavigator(),
-          home: LoginNavigator(),
+          home: SharedPreferencesController().loggedIn ? AppNavigation() : LoginNavigator(),
+          // home: LoginNavigator(),
           routes: PageRoutes().routes(),
         );
       },

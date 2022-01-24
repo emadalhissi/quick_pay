@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 
     <application
-        android:label="quick pay master"
+        android:label="QuickPay"
         tools:replace="android:label"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

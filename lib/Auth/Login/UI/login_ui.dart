@@ -29,7 +29,6 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
   late TextEditingController _mobileEditingController;
   late TextEditingController _passwordEditingController;
   final StudentDbController _DBProviderController = StudentDbController();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -134,24 +133,24 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                 SizedBox(
                   height: 24,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: InkWell(
-                    onTap: () async {
-                      List<Student> st = [];
-                      st = await _DBProviderController.read();
-                      if (st.isNotEmpty) {
-                        for (int i = 0; i < st.length; i++) {
-                          print("data item " + st[i].email);
-                        }
-                        print('PRINT DATABASE++');
-                      }
-                    },
-                    child: CustomButton(
-                      "Print DataBase",
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(16.0),
+                //   child: InkWell(
+                //     onTap: () async {
+                //       List<Student> st = [];
+                //       st = await _DBProviderController.read();
+                //       if (st.isNotEmpty) {
+                //         for (int i = 0; i < st.length; i++) {
+                //           print("data item " + st[i].email);
+                //         }
+                //         print('PRINT DATABASE++');
+                //       }
+                //     },
+                //     child: CustomButton(
+                //       "Print DataBase",
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             PositionedDirectional(
@@ -212,24 +211,10 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
     return true;
   }
 
-  // Future<void> login() async {
-  //   bool status = await GetStudentDetails()
-  //       .getStudents(context, mobile: _mobileEditingController.text);
-  //   if (status) {
-  //     // SharedPreferencesController().login();
-  //     print('LOGIN DONE');
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => VerificationPage(null),
-  //       ),
-  //     );
-  //   }
-  // }
   Future<void> login() async {
     print('check from login++');
-    List<Student> status =
-        await GetStudentDetails().getStudents(context, mobile: _mobileEditingController.text);
+    List<Student> status = await GetStudentDetails()
+        .getStudents(context, mobile: _mobileEditingController.text);
     if (status.isNotEmpty) {
       print('LOGIN DONE++');
       SharedPreferencesController().login();
@@ -237,8 +222,12 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
         await _DBProviderController.create(status[i]);
       }
       print('SAVE DATABASE++');
-      // SharedPreferencesController().login();
-      // TODO: Navigate to verification
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerificationPage(null),
+        ),
+      );
     }
   }
 }
