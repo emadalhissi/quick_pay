@@ -6,9 +6,12 @@ import 'package:quick_pay/API/Controllers/get_students_details.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
+import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/assets.dart';
+import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 import '../../../Theme/colors.dart' show transparentColor;
 import 'login_interactor.dart';
@@ -25,6 +28,7 @@ class LoginUI extends StatefulWidget {
 class _LoginUIState extends State<LoginUI> with ApiHelper {
   late TextEditingController _mobileEditingController;
   late TextEditingController _passwordEditingController;
+  final StudentDbController _DBProviderController = StudentDbController();
 
   @override
   void initState() {
@@ -130,6 +134,24 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                 SizedBox(
                   height: 24,
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InkWell(
+                    onTap: () async {
+                      List<Student> st = [];
+                      st = await _DBProviderController.read();
+                      if (st.isNotEmpty) {
+                        for (int i = 0; i < st.length; i++) {
+                          print("data item " + st[i].email);
+                        }
+                        print('PRINT DATABASE++');
+                      }
+                    },
+                    child: CustomButton(
+                      "Print DataBase",
+                    ),
+                  ),
+                ),
               ],
             ),
             PositionedDirectional(
@@ -179,7 +201,7 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
         error: true,
       );
       return false;
-    } else if(_mobileEditingController.text.length != 10) {
+    } else if (_mobileEditingController.text.length != 10) {
       showSnackBar(
         context,
         message: 'Number must be 10 digits!',
@@ -190,18 +212,33 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
     return true;
   }
 
+  // Future<void> login() async {
+  //   bool status = await GetStudentDetails()
+  //       .getStudents(context, mobile: _mobileEditingController.text);
+  //   if (status) {
+  //     // SharedPreferencesController().login();
+  //     print('LOGIN DONE');
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => VerificationPage(null),
+  //       ),
+  //     );
+  //   }
+  // }
   Future<void> login() async {
-    bool status = await GetStudentDetails()
-        .getStudents(context, mobile: _mobileEditingController.text);
-    if (status) {
+    print('check from login++');
+    List<Student> status =
+        await GetStudentDetails().getStudents(context, mobile: _mobileEditingController.text);
+    if (status.isNotEmpty) {
+      print('LOGIN DONE++');
+      SharedPreferencesController().login();
+      for (int i = 0; i < status.length; i++) {
+        await _DBProviderController.create(status[i]);
+      }
+      print('SAVE DATABASE++');
       // SharedPreferencesController().login();
-      print('LOGIN DONE');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerificationPage(null),
-        ),
-      );
+      // TODO: Navigate to verification
     }
   }
 }

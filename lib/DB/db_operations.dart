@@ -1,4 +1,14 @@
+
 abstract class DbOperations<T> {
+
+  /**
+   * CRUD:
+   * C => Create
+   * R => Read
+   * U => Update
+   * D => Delete
+   */
+
   Future<int> create(T object);
 
   Future<List<T>> read();
@@ -8,13 +18,5 @@ abstract class DbOperations<T> {
   Future<bool> update(T object);
 
   Future<bool> delete(int id);
-
-/**
- * CRUD:
- * C => Create
- * R => Read
- * U => Update
- * D => Delete
- */
-
+  Future<bool> deleteDateToUser(int id);
 }

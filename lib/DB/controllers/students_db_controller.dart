@@ -1,19 +1,23 @@
+
 import 'package:quick_pay/DB/db_operations.dart';
-import 'package:quick_pay/DB/db_provider.dart';
-import 'package:quick_pay/Models/db_models/student.dart';
+import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:sqflite/sqflite.dart';
 
-class StudentsDbController implements DbOperations<DBStudent> {
-  final Database _database = DBProvider().getDatabase;
+import '../db_provider.dart';
+
+class StudentDbController implements DbOperations<Student> {
+  final Database _database = DBProvider().database;
 
   @override
-  Future<int> create(DBStudent student) async {
-    int newRow = await _database.insert('STUDENTS', student.toMap());
-    return newRow;
+  Future<int> create(Student object) async {
+    // INSERT INTO contact (name, phone) VALUES ('Name','1234');
+    return await _database.insert('STUDENTS', object.toMap());
   }
 
   @override
   Future<bool> delete(int id) async {
+    //DELETE FROM contacts;
+    //DELETE FROM contacts WHERE id = 1;
     int numberOfDeletedRows = await _database.delete(
       'STUDENTS',
       where: 'id = ?',
@@ -23,25 +27,25 @@ class StudentsDbController implements DbOperations<DBStudent> {
   }
 
   @override
-  // Read All
-  Future<List<DBStudent>> read() async {
-    List<Map<String, dynamic>> mapRows = await _database.query('STUDENTS');
-    return mapRows.map((mapRow) => DBStudent.fromMap(mapRow)).toList();
+  Future<List<Student>> read() async {
+    // TODO: implement read
+    // SELECT * FROM contacts;
+    List<Map<String, dynamic>> rowsMap = await _database.query('STUDENTS');
+    return rowsMap.map((Map<String, dynamic> rowMap) => Student.fromMap(rowMap)).toList();
   }
 
   @override
-  // Read item based on ID
-  Future<DBStudent?> show(int id) async {
-    List<Map<String, dynamic>> row = await _database.query(
-      'STUDENTS',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return row.isNotEmpty ? DBStudent.fromMap(row.first) : null;
+  Future<Student?> show(int id) async {
+    // SELECT * FROM contacts WHERE id = ?;
+    List<Map<String, dynamic>> rows =
+    await _database.query('STUDENTS', where: 'id = ?', whereArgs: [id]);
+    return rows.isNotEmpty ? Student.fromMap(rows.first) : null;
   }
 
   @override
-  Future<bool> update(DBStudent object) async {
+  Future<bool> update(Student object) async {
+    //UPDATE contacts SET name = 'NAME', phone = '1234';
+    //UPDATE contacts SET name = 'NAME', phone = '1234' WHERE id = ?;
     int numberOfUpdatedRows = await _database.update(
       'STUDENTS',
       object.toMap(),
@@ -49,5 +53,11 @@ class StudentsDbController implements DbOperations<DBStudent> {
       whereArgs: [object.id],
     );
     return numberOfUpdatedRows > 0;
+  }
+
+  @override
+  Future<bool> deleteDateToUser(int id) {
+    // TODO: implement deleteDateToUser
+    throw UnimplementedError();
   }
 }

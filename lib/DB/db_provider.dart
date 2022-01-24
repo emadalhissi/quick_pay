@@ -15,9 +15,9 @@ class DBProvider {
 
   DBProvider._internal();
 
-  Database get getDatabase => _database;
+  Database get database => _database;
 
-  Future<Database> initDatabase() async {
+  Future<void> initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = join(directory.path, 'db_sql.sql');
 
@@ -27,17 +27,32 @@ class DBProvider {
       onOpen: (Database db) {},
       onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE STUDENTS ("
-            "id integer PRIMARY KEY AUTOINCREMENT,"
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             "studentId TEXT NOT NULL,"
+            "siblingId TEXT NOT NULL,"
+            "sid Integer NOT NULL,"
             "stdname TEXT NOT NULL,"
-            "school_code TEXT NOT NULL,"
-            "school_name NULL,"
-            "school_logo NULL,"
+            "chatid TEXT NOT NULL,"
+            "cgroupId INTEGER NOT NULL,"
+            "cgroupName TEXT NOT NULL,"
+            "courseId INTEGER NOT NULL,"
+            "courseName TEXT NOT NULL,"
+            "fatherGuardianName TEXT NOT NULL,"
+            "admissionNumber TEXT NOT NULL,"
+            "sectionId INTEGER NOT NULL,"
+            "sectionName TEXT NOT NULL,"
+            "contacts TEXT NOT NULL,"
+            "billerId TEXT NOT NULL,"
+            "cityName TEXT NOT NULL,"
+            "schoolName TEXT NOT NULL,"
+            "schoolLogo TEXT NOT NULL,"
+            "schoolCode TEXT NOT NULL,"
+            "country TEXT NOT NULL,"
+            "email TEXT NOT NULL"
             ")");
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) {},
       onDowngrade: (Database db, int oldVersion, int newVersion) {},
     );
-    return _database;
   }
 }
