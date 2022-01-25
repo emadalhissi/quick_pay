@@ -41,7 +41,7 @@ class CustomGridView extends StatelessWidget {
                   child: FadedScaleAnimation(
                     Image.asset(
                       list[index].image,
-                      scale: 0.5,
+                      scale: 1,
                     ),
                   ),
                 ),

@@ -10,6 +10,9 @@ class EntryField extends StatelessWidget {
   final String? initialValue;
   final String? formatter;
   final TextEditingController? controller;
+  final TextInputType? textInputType;
+
+  // keyboardType: TextInputType.number,
 
   EntryField(
     this.hintText,
@@ -19,11 +22,13 @@ class EntryField extends StatelessWidget {
     this.initialValue,
     this.controller,
     this.formatter,
+    this.textInputType,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: textInputType,
       controller: controller,
       initialValue: initialValue,
       decoration: InputDecoration(

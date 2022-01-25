@@ -22,6 +22,8 @@ class VerificationUI extends StatefulWidget {
 class _VerificationUIState extends State<VerificationUI> with ApiHelper {
   late TextEditingController _codeEditingController;
 
+  bool loading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -71,11 +73,22 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                   SizedBox(
                     height: 15,
                   ),
-                  EntryField(
-                    locale.enterCodeHere,
-                    null,
-                    controller: _codeEditingController,
-                    formatter: '0-9',
+                  Expanded(
+                    flex: 0,
+                    child: Stack(
+                      children: [
+                        EntryField(
+                          locale.enterCodeHere,
+                          null,
+                          controller: _codeEditingController,
+                          formatter: '0-9',
+                          textInputType: TextInputType.number,
+                        ),
+                        loading
+                            ? Center(child: CircularProgressIndicator())
+                            : SizedBox.shrink(),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 25,
@@ -87,7 +100,14 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                       locale.submit!.toUpperCase(),
                       onTap: () async {
                         await performVerify();
+                        print('Clicked');
                         widget.verificationInteractor.verificationDone();
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => AppNavigation(),
+                        //   ),
+                        // );
                       },
                     ),
                   ),
@@ -102,7 +122,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                           .bodyText1!
                           .copyWith(color: Theme.of(context).primaryColorLight),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -129,7 +149,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
         error: true,
       );
       return false;
-    } else if(_codeEditingController.text.length != 4) {
+    } else if (_codeEditingController.text.length != 4) {
       showSnackBar(
         context,
         message: 'Number must be 4 digits!',
@@ -140,20 +160,27 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
     return true;
   }
 
-  Future<void> verify() async{
-
+  Future<void> verify() async {
+    print('Still Loading');
+    setState(() {
+      loading = true;
+    });
     var code = SharedPreferencesController().getOtpCode.toString();
     bool status = code == _codeEditingController.text ? true : false;
     if (status) {
       await SharedPreferencesController().login();
       // showSnackBar(context, message: 'Thank you for coming back!');
+      print('Finish Loading');
+      setState(() {
+        loading = false;
+      });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => AppNavigation(
-            // () =>
-            //     Navigator.popAndPushNamed(context, PageRoutes.bottomNavigation),
-          ),
+              // () =>
+              //     Navigator.popAndPushNamed(context, PageRoutes.bottomNavigation),
+              ),
         ),
       );
     } else {

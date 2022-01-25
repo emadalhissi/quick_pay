@@ -5,17 +5,19 @@ import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/Theme/style.dart';
 
-class MyOrdersPage extends StatefulWidget {
+class EducationFeesScreen extends StatefulWidget {
   @override
-  _MyOrdersPageState createState() => _MyOrdersPageState();
+  _EducationFeesScreenState createState() => _EducationFeesScreenState();
 }
 
-class _MyOrdersPageState extends State<MyOrdersPage> {
+class _EducationFeesScreenState extends State<EducationFeesScreen> {
+  var myMenuItems = <String>[];
+
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
     return DefaultTabController(
-      length: 4,
+      length: 2,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: PreferredSize(
@@ -42,36 +44,41 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                 indicatorColor: Theme.of(context).scaffoldBackgroundColor,
                 tabs: [
                   Tab(
-                    text: locale.all,
+                    text: 'Fee Details',
                   ),
                   Tab(
-                    text: locale.recharge,
-                  ),
-                  Tab(
-                    text: locale.tickets,
-                  ),
-                  Tab(
-                    text: locale.bill,
+                    text: 'Transaction Details',
                   ),
                 ],
               ),
               actions: [
-                GestureDetector(
-                    onTap: () {},
-                    child: Image.asset(
-                      'assets/icons/ic_search_wt.png',
-                      width: 20,
-                    )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Image.asset(
-                      'assets/icons/ic_cart_wt.png',
-                      width: 20,
-                    ),
-                  ),
+                PopupMenuButton<String>(
+                  itemBuilder: (context) {
+                    return myMenuItems.map((String string) {
+                      return PopupMenuItem<String>(
+                        child: Text(string),
+                        value: string,
+                      );
+                    }).toList();
+                  },
                 )
+                // GestureDetector(
+                //   onTap: () {},
+                //   child: Image.asset(
+                //     'assets/icons/ic_search_wt.png',
+                //     width: 20,
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                //   child: GestureDetector(
+                //     onTap: () {},
+                //     child: Image.asset(
+                //       'assets/icons/ic_cart_wt.png',
+                //       width: 20,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

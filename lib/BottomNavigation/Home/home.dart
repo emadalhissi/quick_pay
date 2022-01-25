@@ -4,7 +4,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quick_pay/BottomNavigation/Home/Pages/book_ticket.dart';
 import 'package:quick_pay/Components/custom_offers_container.dart';
 import 'package:quick_pay/Components/custom_options_grid_view.dart';
@@ -14,6 +14,7 @@ import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
+import 'package:quick_pay/Screens/education_fees_screen.dart';
 import 'package:quick_pay/Theme/style.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,55 +51,55 @@ class _HomePageState extends State<HomePage> {
 
   // List<Student> st = [];
   // st = await _DBProviderController.read();
-  static final AdRequest request = AdRequest(
-    keywords: <String>['foo', 'bar'],
-    contentUrl: 'http://foo.com/bar.html',
-    nonPersonalizedAds: true,
-  );
+  // static final AdRequest request = AdRequest(
+  //   keywords: <String>['foo', 'bar'],
+  //   contentUrl: 'http://foo.com/bar.html',
+  //   nonPersonalizedAds: true,
+  // );
 
-  BannerAd? _anchoredBanner;
+  // BannerAd? _anchoredBanner;
   bool _loadingAnchoredBanner = false;
 
-  Future<void> _createAnchoredBanner(BuildContext context) async {
-    final AnchoredAdaptiveBannerAdSize? size =
-        await AdSize.getAnchoredAdaptiveBannerAdSize(
-      Orientation.portrait,
-      MediaQuery.of(context).size.width.truncate(),
-    );
-
-    if (size == null) {
-      print('Unable to get height of anchored banner.');
-      return;
-    }
-
-    final BannerAd banner = BannerAd(
-      size: size,
-      request: request,
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/6300978111'
-          : 'ca-app-pub-3940256099942544/2934735716',
-      listener: BannerAdListener(
-        onAdLoaded: (Ad ad) {
-          print('$BannerAd loaded.');
-          setState(() {
-            _anchoredBanner = ad as BannerAd?;
-          });
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('$BannerAd failedToLoad: $error');
-          ad.dispose();
-        },
-        onAdOpened: (Ad ad) => print('$BannerAd onAdOpened.'),
-        onAdClosed: (Ad ad) => print('$BannerAd onAdClosed.'),
-      ),
-    );
-    return banner.load();
-  }
+  // Future<void> _createAnchoredBanner(BuildContext context) async {
+  //   final AnchoredAdaptiveBannerAdSize? size =
+  //       await AdSize.getAnchoredAdaptiveBannerAdSize(
+  //     Orientation.portrait,
+  //     MediaQuery.of(context).size.width.truncate(),
+  //   );
+  //
+  //   if (size == null) {
+  //     print('Unable to get height of anchored banner.');
+  //     return;
+  //   }
+  //
+  //   final BannerAd banner = BannerAd(
+  //     size: size,
+  //     request: request,
+  //     adUnitId: Platform.isAndroid
+  //         ? 'ca-app-pub-3940256099942544/6300978111'
+  //         : 'ca-app-pub-3940256099942544/2934735716',
+  //     listener: BannerAdListener(
+  //       onAdLoaded: (Ad ad) {
+  //         print('$BannerAd loaded.');
+  //         setState(() {
+  //           _anchoredBanner = ad as BannerAd?;
+  //         });
+  //       },
+  //       onAdFailedToLoad: (Ad ad, LoadAdError error) {
+  //         print('$BannerAd failedToLoad: $error');
+  //         ad.dispose();
+  //       },
+  //       onAdOpened: (Ad ad) => print('$BannerAd onAdOpened.'),
+  //       onAdClosed: (Ad ad) => print('$BannerAd onAdClosed.'),
+  //     ),
+  //   );
+  //   return banner.load();
+  // }
 
   @override
   void dispose() {
     super.dispose();
-    _anchoredBanner?.dispose();
+    // _anchoredBanner?.dispose();
   }
 
   @override
@@ -169,10 +170,10 @@ class _HomePageState extends State<HomePage> {
     ];
     return Builder(
       builder: (BuildContext context) {
-        if (!_loadingAnchoredBanner) {
-          _loadingAnchoredBanner = true;
-          _createAnchoredBanner(context);
-        }
+        // if (!_loadingAnchoredBanner) {
+        //   _loadingAnchoredBanner = true;
+        //   _createAnchoredBanner(context);
+        // }
         return Scaffold(
           body: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
@@ -246,103 +247,174 @@ class _HomePageState extends State<HomePage> {
                             height: 8,
                           ),
                           // CustomGridView(_quickPays),
-                          SizedBox(
-                            height: 180,
-                            child: FutureBuilder<List<Student>>(
-                              future: _future,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData &&
-                                    snapshot.data!.isNotEmpty) {
-                                  _studentsList = snapshot.data ?? [];
-                                }
-                                return ListView.builder(
-                                  itemCount: _studentsList.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                          end: 10),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                50,
-                                        height: 180,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      _studentsList[index]
-                                                          .stdname,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        color:
-                                                            Color(0xff2372ba),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      'ID: ' +
-                                                          _studentsList[index]
-                                                              .studentId,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        color:
-                                                            Color(0xff050505),
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      _studentsList[index]
-                                                          .schoolName,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        color:
-                                                            Color(0xff050505),
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                  ],
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons.arrow_forward_ios,
-                                                color: Color(0xff737373),
-                                                size: 36,
-                                              ),
-                                            ],
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey[200]!,
+                                  spreadRadius: 0.3,
+                                  blurRadius: 0.3,
+                                  offset: Offset.fromDirection(0.75, 2.0),
+                                ),
+                              ],
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            margin: EdgeInsets.symmetric(vertical: 12),
+                            child: GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.symmetric(),
+                              shrinkWrap: true,
+                              // itemCount: list.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisSpacing: 12, crossAxisCount: 4),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  // onTap: list[index].onTap,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: FadedScaleAnimation(
+                                          Image.asset(
+                                            // list[index].image,
+                                            'assets/icons/ic_add_student.png',
+                                            scale: 1,
                                           ),
                                         ),
                                       ),
-                                    );
-                                  },
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        // list[index].title,
+                                        'title',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2!
+                                            .copyWith(fontSize: 13),
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ],
+                                  ),
                                 );
                               },
                             ),
                           ),
+                          // SizedBox(
+                          //   height: 180,
+                          //   child: FutureBuilder<List<Student>>(
+                          //     future: _future,
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.hasData &&
+                          //           snapshot.data!.isNotEmpty) {
+                          //         _studentsList = snapshot.data ?? [];
+                          //       }
+                          //       return ListView.builder(
+                          //         itemCount: _studentsList.length,
+                          //         scrollDirection: Axis.horizontal,
+                          //         itemBuilder: (context, index) {
+                          //           return Padding(
+                          //             padding: const EdgeInsetsDirectional.only(
+                          //                 end: 10),
+                          //             child: InkWell(
+                          //               onTap: () {
+                          //                 print('Go To Education Fees Screen');
+                          //                 Navigator.push(
+                          //                   context,
+                          //                   MaterialPageRoute(
+                          //                     builder: (context) =>
+                          //                         EducationFeesScreen(),
+                          //                   ),
+                          //                 );
+                          //               },
+                          //               child: Container(
+                          //                 width: MediaQuery.of(context)
+                          //                         .size
+                          //                         .width -
+                          //                     50,
+                          //                 height: 180,
+                          //                 decoration: BoxDecoration(
+                          //                   color: Theme.of(context)
+                          //                       .scaffoldBackgroundColor,
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(10),
+                          //                 ),
+                          //                 child: Padding(
+                          //                   padding: const EdgeInsets.all(20),
+                          //                   child: Row(
+                          //                     mainAxisAlignment:
+                          //                         MainAxisAlignment
+                          //                             .spaceBetween,
+                          //                     children: [
+                          //                       Expanded(
+                          //                         child: Column(
+                          //                           crossAxisAlignment:
+                          //                               CrossAxisAlignment
+                          //                                   .start,
+                          //                           mainAxisAlignment:
+                          //                               MainAxisAlignment
+                          //                                   .center,
+                          //                           children: [
+                          //                             Text(
+                          //                               _studentsList[index]
+                          //                                   .stdname,
+                          //                               style: TextStyle(
+                          //                                 fontSize: 18,
+                          //                                 color:
+                          //                                     Color(0xff2372ba),
+                          //                                 fontWeight:
+                          //                                     FontWeight.bold,
+                          //                               ),
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                             ),
+                          //                             SizedBox(height: 10),
+                          //                             Text(
+                          //                               'ID: ' +
+                          //                                   _studentsList[index]
+                          //                                       .studentId,
+                          //                               style: TextStyle(
+                          //                                 fontSize: 18,
+                          //                                 color:
+                          //                                     Color(0xff050505),
+                          //                               ),
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                             ),
+                          //                             SizedBox(height: 5),
+                          //                             Text(
+                          //                               _studentsList[index]
+                          //                                   .schoolName,
+                          //                               style: TextStyle(
+                          //                                 fontSize: 18,
+                          //                                 color:
+                          //                                     Color(0xff050505),
+                          //                               ),
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                             ),
+                          //                             SizedBox(height: 5),
+                          //                           ],
+                          //                         ),
+                          //                       ),
+                          //                       Icon(
+                          //                         Icons.arrow_forward_ios,
+                          //                         color: Color(0xff737373),
+                          //                         size: 36,
+                          //                       ),
+                          //                     ],
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

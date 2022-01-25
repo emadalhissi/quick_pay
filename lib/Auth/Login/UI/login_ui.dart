@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
 import 'package:quick_pay/API/Controllers/get_students_details.dart';
+import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
@@ -29,6 +30,9 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
   late TextEditingController _mobileEditingController;
   late TextEditingController _passwordEditingController;
   final StudentDbController _DBProviderController = StudentDbController();
+
+  bool loading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -69,6 +73,14 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                       ),
                     ),
                     Image.asset(Assets.appLogo, scale: 2.5),
+                    Positioned(
+                      bottom: 50,
+                      child: loading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : SizedBox.shrink(),
+                    ),
                   ],
                 ),
                 TextField(
@@ -84,6 +96,7 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('[0-9]')),
                   ],
+                  keyboardType: TextInputType.number,
                 ),
                 // Material(
                 //   color: theme.scaffoldBackgroundColor,
@@ -124,6 +137,7 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                   child: InkWell(
                     onTap: () async {
                       await performLogin();
+                      print('Clicked');
                     },
                     child: CustomButton(
                       locale.signIn!.toUpperCase(),
@@ -212,8 +226,11 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
   }
 
   Future<void> login() async {
-    print('check from login++');
-    List<Student> status = await GetStudentDetails()
+    print('Still Loading');
+    setState(() {
+      loading = true;
+    });
+    List<Student> status = await GetStudentDetailsByMobile()
         .getStudents(context, mobile: _mobileEditingController.text);
     if (status.isNotEmpty) {
       print('LOGIN DONE++');
@@ -222,6 +239,10 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
         await _DBProviderController.create(status[i]);
       }
       print('SAVE DATABASE++');
+      print('Finish Loading');
+      setState(() {
+        loading = false;
+      });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
