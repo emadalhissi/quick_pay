@@ -65,12 +65,11 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
-                    onTap: () {},
-                    child: Image.asset(
-                      'assets/icons/ic_cart_wt.png',
-                      width: 20,
-                    ),
-                  ),
+                      onTap: () {},
+                      child: Image.asset(
+                        'assets/icons/ic_cart_wt.png',
+                        width: 20,
+                      )),
                 )
               ],
             ),
@@ -79,6 +78,8 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         ),
         body: TabBarView(
           children: [
+            AllOrdersPage(),
+            AllOrdersPage(),
             AllOrdersPage(),
             AllOrdersPage(),
           ],

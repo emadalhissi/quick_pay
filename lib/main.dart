@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quick_pay/Auth/login_navigator.dart';
 import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/DB/db_provider.dart';
@@ -14,7 +13,7 @@ import 'Theme/style.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+  // MobileAds.instance.initialize();
   await SharedPreferencesController().initSharedPreferences();
   await DBProvider().initDatabase();
   final prefs = await SharedPreferences.getInstance();
@@ -55,7 +54,6 @@ class QuickPay extends StatelessWidget {
           theme: appTheme,
           home: SharedPreferencesController().loggedIn ? AppNavigation() : LoginNavigator(),
           // home: LoginNavigator(),
-          // home: AppNavigation(),
           routes: PageRoutes().routes(),
         );
       },

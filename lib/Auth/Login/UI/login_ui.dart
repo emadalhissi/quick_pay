@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
 import 'package:quick_pay/API/Controllers/get_students_details.dart';
-import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
@@ -137,7 +136,6 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                   child: InkWell(
                     onTap: () async {
                       await performLogin();
-                      print('Clicked');
                     },
                     child: CustomButton(
                       locale.signIn!.toUpperCase(),
@@ -226,11 +224,11 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
   }
 
   Future<void> login() async {
-    print('Still Loading');
+    print('check from login++');
     setState(() {
       loading = true;
     });
-    List<Student> status = await GetStudentDetailsByMobile()
+    List<Student> status = await GetStudentDetails()
         .getStudents(context, mobile: _mobileEditingController.text);
     if (status.isNotEmpty) {
       print('LOGIN DONE++');
@@ -239,7 +237,6 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
         await _DBProviderController.create(status[i]);
       }
       print('SAVE DATABASE++');
-      print('Finish Loading');
       setState(() {
         loading = false;
       });

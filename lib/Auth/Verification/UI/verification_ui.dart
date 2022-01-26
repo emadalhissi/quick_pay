@@ -21,7 +21,6 @@ class VerificationUI extends StatefulWidget {
 
 class _VerificationUIState extends State<VerificationUI> with ApiHelper {
   late TextEditingController _codeEditingController;
-
   bool loading = false;
 
   @override
@@ -82,7 +81,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                           null,
                           controller: _codeEditingController,
                           formatter: '0-9',
-                          textInputType: TextInputType.number,
+                          inputType: TextInputType.number,
                         ),
                         loading
                             ? Center(child: CircularProgressIndicator())
@@ -100,14 +99,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                       locale.submit!.toUpperCase(),
                       onTap: () async {
                         await performVerify();
-                        print('Clicked');
                         widget.verificationInteractor.verificationDone();
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => AppNavigation(),
-                        //   ),
-                        // );
                       },
                     ),
                   ),
@@ -122,7 +114,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                           .bodyText1!
                           .copyWith(color: Theme.of(context).primaryColorLight),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -161,7 +153,6 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
   }
 
   Future<void> verify() async {
-    print('Still Loading');
     setState(() {
       loading = true;
     });
@@ -170,7 +161,6 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
     if (status) {
       await SharedPreferencesController().login();
       // showSnackBar(context, message: 'Thank you for coming back!');
-      print('Finish Loading');
       setState(() {
         loading = false;
       });
