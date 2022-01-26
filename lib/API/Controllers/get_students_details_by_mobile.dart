@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class GetStudentDetailsByMobile with ApiHelper {
-  Future<List<Student>> getStudents(
+  Future<List<Student>> getStudentsByMobile(
       BuildContext context, {
         required String mobile,
       }) async {

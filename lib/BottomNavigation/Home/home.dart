@@ -262,28 +262,28 @@ class _HomePageState extends State<HomePage> {
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
                                     return Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.only(
-                                              end: 10),
+                                      padding: const EdgeInsetsDirectional.only(
+                                          end: 10),
                                       child: Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 12),
-                                        margin: EdgeInsets.symmetric(vertical: 12),
-                                        width: MediaQuery.of(context)
-                                                .size
-                                                .width -
-                                            50,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                50,
                                         height: 180,
                                         decoration: BoxDecoration(
-                                          color:
-                                          Colors.transparent,
-                                          borderRadius: BorderRadius.circular(12),
+                                          color: Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Colors.grey[200]!,
                                               spreadRadius: 0.3,
                                               blurRadius: 0.3,
-                                              offset: Offset.fromDirection(0.75, 2.0),
+                                              offset: Offset.fromDirection(
+                                                  0.75, 2.0),
                                             ),
                                           ],
                                         ),
@@ -291,17 +291,14 @@ class _HomePageState extends State<HomePage> {
                                           padding: const EdgeInsets.all(20),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Expanded(
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
+                                                      CrossAxisAlignment.start,
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Text(
                                                       _studentsList[index]
@@ -319,13 +316,12 @@ class _HomePageState extends State<HomePage> {
                                                           .copyWith(
                                                             fontSize: 13,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold,
+                                                                FontWeight.bold,
                                                             color: Color(
                                                                 0xff2372ba),
                                                           ),
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     SizedBox(height: 10),
                                                     Text(
@@ -337,32 +333,40 @@ class _HomePageState extends State<HomePage> {
                                                           .bodyText2!
                                                           .copyWith(
                                                               fontSize: 13),
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     SizedBox(height: 5),
                                                     Text(
                                                       _studentsList[index]
-                                                          .schoolName,
+                                                                  .school_name !=
+                                                              null
+                                                          ? _studentsList[index]
+                                                              .school_name!
+                                                          : '',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyText2!
                                                           .copyWith(
                                                               fontSize: 13),
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     SizedBox(height: 5),
                                                     Text(
                                                       _studentsList[index]
-                                                          .cityName,
+                                                                  .city_name !=
+                                                              null
+                                                          ? _studentsList[index]
+                                                              .city_name!
+                                                          : '',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyText2!
                                                           .copyWith(
                                                               fontSize: 13),
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                   ],
                                                 ),

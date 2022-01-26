@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
 import 'package:quick_pay/API/Controllers/get_students_details.dart';
+import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
@@ -228,8 +229,8 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
     setState(() {
       loading = true;
     });
-    List<Student> status = await GetStudentDetails()
-        .getStudents(context, mobile: _mobileEditingController.text);
+    List<Student> status = await GetStudentDetailsByMobile()
+        .getStudentsByMobile(context, mobile: _mobileEditingController.text);
     if (status.isNotEmpty) {
       print('LOGIN DONE++');
       SharedPreferencesController().login();
