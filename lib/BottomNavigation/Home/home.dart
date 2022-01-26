@@ -16,6 +16,7 @@ import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
+import 'package:quick_pay/Screens/education_fees_screen.dart';
 import 'package:quick_pay/Theme/style.dart';
 
 class HomePage extends StatefulWidget {
@@ -264,119 +265,137 @@ class _HomePageState extends State<HomePage> {
                                     return Padding(
                                       padding: const EdgeInsetsDirectional.only(
                                           end: 10),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 12),
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 12),
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                50,
-                                        height: 180,
-                                        decoration: BoxDecoration(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey[200]!,
-                                              spreadRadius: 0.3,
-                                              blurRadius: 0.3,
-                                              offset: Offset.fromDirection(
-                                                  0.75, 2.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EducationFeesScreen(),
                                             ),
-                                          ],
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      _studentsList[index]
-                                                          .stdname,
-                                                      // style: TextStyle(
-                                                      //   fontSize: 13,
-                                                      //   color:
-                                                      //   Color(0xff2372ba),
-                                                      //   fontWeight:
-                                                      //   FontWeight.bold,
-                                                      // ),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Color(
-                                                                0xff2372ba),
-                                                          ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      'ID: ' +
-                                                          _studentsList[index]
-                                                              .studentId,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(
-                                                              fontSize: 13),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      _studentsList[index]
-                                                                  .school_name !=
-                                                              null
-                                                          ? _studentsList[index]
-                                                              .school_name!
-                                                          : '',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(
-                                                              fontSize: 13),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      _studentsList[index]
-                                                                  .city_name !=
-                                                              null
-                                                          ? _studentsList[index]
-                                                              .city_name!
-                                                          : '',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(
-                                                              fontSize: 13),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons.arrow_forward_ios,
-                                                color: Color(0xff737373),
-                                                size: 36,
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 12),
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              50,
+                                          height: 180,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey[200]!,
+                                                spreadRadius: 0.3,
+                                                blurRadius: 0.3,
+                                                offset: Offset.fromDirection(
+                                                    0.75, 2.0),
                                               ),
                                             ],
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        _studentsList[index]
+                                                            .stdname,
+                                                        // style: TextStyle(
+                                                        //   fontSize: 13,
+                                                        //   color:
+                                                        //   Color(0xff2372ba),
+                                                        //   fontWeight:
+                                                        //   FontWeight.bold,
+                                                        // ),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2!
+                                                            .copyWith(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Color(
+                                                                  0xff2372ba),
+                                                            ),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Text(
+                                                        'ID: ' +
+                                                            _studentsList[index]
+                                                                .studentId,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2!
+                                                            .copyWith(
+                                                                fontSize: 13),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        _studentsList[index]
+                                                                    .school_name !=
+                                                                null
+                                                            ? _studentsList[
+                                                                    index]
+                                                                .school_name!
+                                                            : '',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2!
+                                                            .copyWith(
+                                                                fontSize: 13),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        _studentsList[index]
+                                                                    .city_name !=
+                                                                null
+                                                            ? _studentsList[
+                                                                    index]
+                                                                .city_name!
+                                                            : '',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2!
+                                                            .copyWith(
+                                                                fontSize: 13),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Color(0xff737373),
+                                                  size: 36,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),

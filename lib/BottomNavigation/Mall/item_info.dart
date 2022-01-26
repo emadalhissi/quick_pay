@@ -231,12 +231,13 @@ class _ItemInfoPageState extends State<ItemInfoPage> {
                     ),
                   ),
                   trailing: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      width: 160,
-                      child: CustomButton(
-                        locale.addToCart,
-                        onTap: () {},
-                      )),
+                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    width: 160,
+                    child: CustomButton(
+                      locale.addToCart,
+                      onTap: () {},
+                    ),
+                  ),
                 ),
               ),
             )
@@ -258,6 +259,7 @@ class _ItemInfoPageState extends State<ItemInfoPage> {
           title,
           style:
               Theme.of(context).textTheme.subtitle1!.copyWith(color: textColor),
+          overflow: TextOverflow.ellipsis,
         ),
         Spacer(
           flex: 12,
