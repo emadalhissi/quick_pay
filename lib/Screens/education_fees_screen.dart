@@ -23,7 +23,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   late Future<FeeFullJson?> _future;
   bool _isChecked = false;
   late TextEditingController feeEditingController;
-  num totalFee = SharedPreferencesController().getTotalFee;
+
+  // num totalFee = SharedPreferencesController().getTotalFee;
+  num totalFee = 0;
   List<bool> _isCheckedList = <bool>[
     false,
     false,
@@ -160,8 +162,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                       // WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
                       //   totalFee = fee;
                       // }));
-                      SharedPreferencesController().setTotalFee(totalFee: int.parse(totalFee.toString()));
-                      print('saved to sp');
+                      // SharedPreferencesController().setTotalFee(
+                      //     totalFee: int.parse(totalFee.toString()));
+                      // print('saved to sp');
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -222,22 +225,18 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                                         index] ==
                                                     false) {
                                                   _isCheckedList[index] = true;
-                                                  WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+                                                  setState(() {
                                                     totalFee += feeFullJson!
                                                         .data![index].fixedFee!;
-                                                    feeEditingController.text =
-                                                        totalFee.toString();
-                                                  }));
-
+                                                  });
+                                                  // feeEditingController.text =
+                                                  //     totalFee.toString();
                                                 } else {
                                                   _isCheckedList[index] = false;
-
-                                                  WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-                                                    totalFee -= feeFullJson!
-                                                        .data![index].fixedFee!;
-                                                    feeEditingController.text =
-                                                        totalFee.toString();
-                                                  }));
+                                                  totalFee -= feeFullJson!
+                                                      .data![index].fixedFee!;
+                                                  // feeEditingController.text =
+                                                  //     totalFee.toString();
                                                 }
                                               });
                                             },
@@ -291,51 +290,97 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5, vertical: 5),
-                                        child: TextField(
-                                          controller: feeEditingController,
-                                          keyboardType: TextInputType.number,
-                                          readOnly: true,
-                                          decoration: InputDecoration(
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: Colors.black,
-                                                width: 1.5,
-                                              ),
+                                        child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 1.5,
                                             ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: Colors.black,
-                                                width: 1.5,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsetsDirectional
+                                                            .only(
+                                                        start: 15, top: 5),
+                                                child: Text(
+                                                  '₹',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5!
+                                                      .copyWith(
+                                                        fontSize: 19,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
                                               ),
-                                            ),
-                                            hintText: 'Total',
-                                            // prefixText: '₹',
-                                            prefixIcon: Padding(
-                                              padding:
-                                                  const EdgeInsetsDirectional
-                                                      .only(start: 15, top: 10),
-                                              child: Text(
-                                                '₹',
+                                              SizedBox(width: 17),
+                                              Text(
+                                                totalFee.toString(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5!
                                                     .copyWith(
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
                                               ),
-                                            ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 12),
+                                            ],
                                           ),
                                         ),
+
+                                        // child: TextField(
+                                        //   controller: feeEditingController,
+                                        //   keyboardType: TextInputType.number,
+                                        //   readOnly: true,
+                                        //   decoration: InputDecoration(
+                                        //     enabledBorder: OutlineInputBorder(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(10),
+                                        //       borderSide: BorderSide(
+                                        //         color: Colors.black,
+                                        //         width: 1.5,
+                                        //       ),
+                                        //     ),
+                                        //     focusedBorder: OutlineInputBorder(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(10),
+                                        //       borderSide: BorderSide(
+                                        //         color: Colors.black,
+                                        //         width: 1.5,
+                                        //       ),
+                                        //     ),
+                                        //     hintText: 'Total',
+                                        //     // prefixText: '₹',
+                                        //     prefixIcon: Padding(
+                                        //       padding:
+                                        //           const EdgeInsetsDirectional
+                                        //               .only(start: 15, top: 10),
+                                        //       child: Text(
+                                        //         '₹',
+                                        //         style: Theme.of(context)
+                                        //             .textTheme
+                                        //             .headline5!
+                                        //             .copyWith(
+                                        //               fontSize: 18,
+                                        //               fontWeight:
+                                        //                   FontWeight.bold,
+                                        //             ),
+                                        //       ),
+                                        //     ),
+                                        //     contentPadding:
+                                        //         EdgeInsets.symmetric(
+                                        //             vertical: 10,
+                                        //             horizontal: 12),
+                                        //   ),
+                                        // ),
                                       ),
                                       SizedBox(height: 5),
                                       Text(
