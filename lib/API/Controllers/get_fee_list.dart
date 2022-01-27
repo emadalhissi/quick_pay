@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/API/api_settings.dart';
+import 'package:quick_pay/Models/api_models/fee_full_json.dart';
 import 'package:quick_pay/Models/api_models/fee_list.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:http/http.dart' as http;
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class GetFeeList with ApiHelper {
-  Future<List<FeeList>> getFeeList(
+  Future<FeeFullJson?> getFeeList(
       BuildContext context, {
         required String id,
       }) async {
@@ -27,10 +28,8 @@ class GetFeeList with ApiHelper {
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {
-      var jsonResponse = jsonDecode(response.body)['data'] as List;
-      var jsonResponseData =
-      jsonResponse.map((obj) => FeeList.fromJson(obj)).toList();
-      return jsonResponseData;
+      var jsonResponse = FeeFullJson.fromJson(jsonDecode(response.body));
+      return jsonResponse;
     } else if (resultCode == 500) {
       var message = jsonDecode(response.body)['message'];
       showSnackBar(
@@ -45,6 +44,6 @@ class GetFeeList with ApiHelper {
         error: true,
       );
     }
-    return [];
+    return null;
   }
 }
