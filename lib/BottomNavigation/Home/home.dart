@@ -277,14 +277,14 @@ class _HomePageState extends State<HomePage> {
                                         },
                                         child: Container(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 12),
+                                              horizontal: 10, vertical: 10),
                                           margin: EdgeInsets.symmetric(
                                               vertical: 12),
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width -
                                               50,
-                                          height: 180,
+                                          height: 160,
                                           decoration: BoxDecoration(
                                             color: Colors.transparent,
                                             borderRadius:
@@ -300,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.all(20),
+                                            padding: const EdgeInsets.only(left: 15, right: 0),
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -329,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                              fontSize: 13,
+                                                              fontSize: 16.5,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -348,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                                fontSize: 13),
+                                                                fontSize: 13.5),
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                       ),
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                                fontSize: 13),
+                                                                fontSize: 13.5),
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                       ),
@@ -382,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                                fontSize: 13),
+                                                                fontSize: 13.5),
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                       ),
