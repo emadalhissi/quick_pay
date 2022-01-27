@@ -9,6 +9,7 @@ import 'package:quick_pay/Models/api_models/fee_full_json.dart';
 import 'package:quick_pay/Models/api_models/fee_list.dart';
 import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/Theme/style.dart';
+import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class EducationFeesScreen extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   late Future<FeeFullJson?> _future;
   bool _isChecked = false;
   late TextEditingController feeEditingController;
-
+  num totalFee = SharedPreferencesController().getTotalFee;
   List<bool> _isCheckedList = <bool>[
     false,
     false,
@@ -146,253 +147,224 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.data != null) {
                       feeFullJson = snapshot.data;
-                      // List<bool> _checkBoxes = <bool>();
-                      // _isCheckedList = List.generate(feeFullJson!.data!.length, (index) => _isChecked);
-                      // var _isCheckedArray = List<bool>.filled(
-                      //     feeFullJson!.data!.length, false,
-                      //     growable: true);
-                      return Stack(
+                      num fee = 0;
+                      for (int i = 0; i < feeFullJson!.data!.length; i++) {
+                        if (feeFullJson!.data![i].isMandatory == 1) {
+                          print('$i ${feeFullJson!.data![i].fixedFee}');
+                          fee += feeFullJson!.data![i].fixedFee!;
+                        }
+                      }
+                      // feeEditingController.text = totalFee.toString();
+                      totalFee = fee;
+                      print('$totalFee');
+                      // WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+                      //   totalFee = fee;
+                      // }));
+                      SharedPreferencesController().setTotalFee(totalFee: int.parse(totalFee.toString()));
+                      print('saved to sp');
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ListView(
-                            children: [
-                              // Container(),
-                              Material(
-                                elevation: 0.5,
-                                color: Colors.grey.shade300,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 24, vertical: 16),
-                                  child: buildItemProperty(
-                                    context,
-                                    feeFullJson!.notes!,
-                                    SizedBox.shrink(),
-                                    SizedBox.shrink(),
+                          Expanded(
+                            flex: 3,
+                            child: ListView(
+                              children: [
+                                // Container(),
+                                Material(
+                                  elevation: 0.5,
+                                  color: Colors.grey.shade300,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 24, vertical: 16),
+                                    child: buildItemProperty(
+                                      context,
+                                      feeFullJson!.notes!,
+                                      SizedBox.shrink(),
+                                      SizedBox.shrink(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                itemCount: feeFullJson!.data!.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
-                                    child: Material(
-                                      elevation: 0.8,
-                                      child: Padding(
-                                        padding: EdgeInsets.zero,
-                                        child: CheckboxListTile(
-                                          activeColor: feeFullJson!.data![index]
-                                                      .isMandatory ==
-                                                  1
-                                              ? Color(0xffbdbdbd)
-                                              : Color(0xff1976d3),
-                                          tristate: true,
-                                          value: feeFullJson!.data![index]
-                                                      .isMandatory ==
-                                                  1
-                                              ? true
-                                              : _isCheckedList[index],
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _isCheckedList[index] =
-                                                  !_isCheckedList[index];
-                                            });
-                                          },
-                                          title: myBuildItemProperty(
-                                            context,
-                                            feeFullJson!.data![index].subFee!,
-                                            // 'fed',
-                                            Text(
-                                              feeFullJson!.data![index].orderBy!
-                                                  .toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5!
-                                                  .copyWith(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  itemCount: feeFullJson!.data!.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Material(
+                                        elevation: 0.8,
+                                        child: Padding(
+                                          padding: EdgeInsets.zero,
+                                          child: CheckboxListTile(
+                                            activeColor: feeFullJson!
+                                                        .data![index]
+                                                        .isMandatory ==
+                                                    1
+                                                ? Color(0xffbdbdbd)
+                                                : Color(0xff1976d3),
+                                            tristate: true,
+                                            value: feeFullJson!.data![index]
+                                                        .isMandatory ==
+                                                    1
+                                                ? true
+                                                : _isCheckedList[index],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                // _isCheckedList[index] =
+                                                //     !_isCheckedList[index];
+                                                if (feeFullJson!.data![index]
+                                                        .isMandatory ==
+                                                    1) {
+                                                  totalFee += 0;
+                                                  // feeEditingController.text = totalFee.toString();
+                                                } else if (_isCheckedList[
+                                                        index] ==
+                                                    false) {
+                                                  _isCheckedList[index] = true;
+                                                  WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+                                                    totalFee += feeFullJson!
+                                                        .data![index].fixedFee!;
+                                                    feeEditingController.text =
+                                                        totalFee.toString();
+                                                  }));
+
+                                                } else {
+                                                  _isCheckedList[index] = false;
+
+                                                  WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+                                                    totalFee -= feeFullJson!
+                                                        .data![index].fixedFee!;
+                                                    feeEditingController.text =
+                                                        totalFee.toString();
+                                                  }));
+                                                }
+                                              });
+                                            },
+                                            title: myBuildItemProperty(
+                                              context,
+                                              feeFullJson!.data![index].subFee!,
+                                              // 'fed',
+                                              Text(
+                                                feeFullJson!
+                                                    .data![index].fixedFee
+                                                    .toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5!
+                                                    .copyWith(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              // SizedBox(
+                                              //   width: 20,
+                                              //   height: 20,
+                                              //   child: Checkbox(
+                                              //     value: false,
+                                              //     onChanged: (v){},
+                                              //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              //   ),
+                                              // ),
                                             ),
-                                            // SizedBox(
-                                            //   width: 20,
-                                            //   height: 20,
-                                            //   child: Checkbox(
-                                            //     value: false,
-                                            //     onChanged: (v){},
-                                            //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                            //   ),
-                                            // ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Expanded(child: Center()),
-                              Container(
-                                color: Colors.transparent,
-                                width: double.infinity,
-                                // height: 50,
-                                child: Column(
-                                  children: [
-                                    TextField(
-                                      controller: feeEditingController,
-                                      keyboardType: TextInputType.number,
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 7),
-                                    Text(
-                                      'Conveyance Fee: ${feeFullJson!.conveyancefee}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    MyCustomButton('PAY NOW'),
-                                  ],
+                                    );
+                                  },
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(
-                        child: Text('NO DATA'),
-                      );
-                    }
-                  },
-                ),
-                beginOffset: Offset(0, 0.3),
-                endOffset: Offset(0, 0),
-                slideCurve: Curves.linearToEaseOut,
-              ),
-            ),
-            Container(
-              color: Theme.of(context).backgroundColor,
-              child: FadedSlideAnimation(
-                FutureBuilder<FeeFullJson?>(
-                  future: _future,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.data != null) {
-                      feeFullJson = snapshot.data;
-                      // List<bool> _checkBoxes = <bool>();
-                      // _isCheckedList = List.generate(feeFullJson!.data!.length, (index) => _isChecked);
-                      // var _isCheckedArray = List<bool>.filled(
-                      //     feeFullJson!.data!.length, false,
-                      //     growable: true);
-                      return ListView(
-                        children: [
-                          // Container(),
-                          Material(
-                            elevation: 0.5,
-                            color: Colors.grey.shade300,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 16),
-                              child: buildItemProperty(
-                                context,
-                                feeFullJson!.notes!,
-                                SizedBox.shrink(),
-                                SizedBox.shrink(),
-                              ),
+                              ],
                             ),
                           ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            itemCount: feeFullJson!.data!.length,
-                            itemBuilder: (context, index) {
-                              return Material(
-                                elevation: 0.5,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CheckboxListTile(
-                                    activeColor:
-                                        feeFullJson!.data![index].isMandatory ==
-                                                1
-                                            ? Color(0xffbdbdbd)
-                                            : Color(0xff1976d3),
-                                    tristate: true,
-                                    value:
-                                        feeFullJson!.data![index].isMandatory ==
-                                                1
-                                            ? true
-                                            : _isCheckedList[index],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _isCheckedList[index] =
-                                            !_isCheckedList[index];
-                                      });
-                                    },
-                                    title: buildItemProperty(
-                                      context,
-                                      feeFullJson!.data![index].subFee!,
-                                      // 'fed',
+                          Expanded(
+                            flex: 0,
+                            child: Column(
+                              children: [
+                                // Expanded(child: Center()),
+                                Container(
+                                  color: Colors.white,
+                                  width: double.infinity,
+                                  // height: 50,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        child: TextField(
+                                          controller: feeEditingController,
+                                          keyboardType: TextInputType.number,
+                                          readOnly: true,
+                                          decoration: InputDecoration(
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            hintText: 'Total',
+                                            // prefixText: '₹',
+                                            prefixIcon: Padding(
+                                              padding:
+                                                  const EdgeInsetsDirectional
+                                                      .only(start: 15, top: 10),
+                                              child: Text(
+                                                '₹',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5!
+                                                    .copyWith(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                            ),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 12),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
                                       Text(
-                                        feeFullJson!.data![index].orderBy!
-                                            .toString(),
+                                        'Conveyance Fee: ${feeFullJson!.conveyancefee}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5!
                                             .copyWith(
-                                              fontSize: 18,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                       ),
-                                      SizedBox.shrink(),
-                                      // SizedBox(
-                                      //   width: 20,
-                                      //   height: 20,
-                                      //   child: Checkbox(
-                                      //     value: false,
-                                      //     onChanged: (v){},
-                                      //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      //   ),
-                                      // ),
-                                    ),
+                                      SizedBox(height: 7),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        child: MyCustomButton(
+                                          'PAY NOW',
+                                          onTap: () {
+                                            print('PAY NOw CLICKED');
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                            },
+                              ],
+                            ),
                           ),
-                          // Container(
-                          //   color: Colors.red,
-                          //   width: double.infinity,
-                          //   height: 50,
-                          // ),
                         ],
                       );
                     } else {
@@ -407,6 +379,98 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                 slideCurve: Curves.linearToEaseOut,
               ),
             ),
+            Center(),
+            // Container(
+            //   color: Theme.of(context).backgroundColor,
+            //   child: FadedSlideAnimation(
+            //     FutureBuilder<FeeFullJson?>(
+            //       future: _future,
+            //       builder: (context, snapshot) {
+            //         if (snapshot.connectionState == ConnectionState.waiting) {
+            //           return Center(child: CircularProgressIndicator());
+            //         } else if (snapshot.data != null) {
+            //           feeFullJson = snapshot.data;
+            //           return ListView(
+            //             children: [
+            //               // Container(),
+            //               Material(
+            //                 elevation: 0.5,
+            //                 color: Colors.grey.shade300,
+            //                 child: Padding(
+            //                   padding: EdgeInsets.symmetric(
+            //                       horizontal: 24, vertical: 16),
+            //                   child: buildItemProperty(
+            //                     context,
+            //                     feeFullJson!.notes!,
+            //                     SizedBox.shrink(),
+            //                     SizedBox.shrink(),
+            //                   ),
+            //                 ),
+            //               ),
+            //               ListView.builder(
+            //                 shrinkWrap: true,
+            //                 physics: BouncingScrollPhysics(),
+            //                 padding: EdgeInsets.symmetric(vertical: 8),
+            //                 itemCount: feeFullJson!.data!.length,
+            //                 itemBuilder: (context, index) {
+            //                   return Material(
+            //                     elevation: 0.5,
+            //                     child: Padding(
+            //                       padding: const EdgeInsets.all(8.0),
+            //                       child: CheckboxListTile(
+            //                         activeColor:
+            //                             feeFullJson!.data![index].isMandatory ==
+            //                                     1
+            //                                 ? Color(0xffbdbdbd)
+            //                                 : Color(0xff1976d3),
+            //                         tristate: true,
+            //                         value:
+            //                             feeFullJson!.data![index].isMandatory ==
+            //                                     1
+            //                                 ? true
+            //                                 : _isCheckedList[index],
+            //                         onChanged: (value) {
+            //                           setState(() {
+            //                             _isCheckedList[index] =
+            //                                 !_isCheckedList[index];
+            //                           });
+            //                         },
+            //                         title: buildItemProperty(
+            //                           context,
+            //                           feeFullJson!.data![index].subFee!,
+            //                           // 'fed',
+            //                           Text(
+            //                             feeFullJson!.data![index].orderBy!
+            //                                 .toString(),
+            //                             style: Theme.of(context)
+            //                                 .textTheme
+            //                                 .headline5!
+            //                                 .copyWith(
+            //                                   fontSize: 18,
+            //                                   fontWeight: FontWeight.bold,
+            //                                 ),
+            //                           ),
+            //                           SizedBox.shrink(),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   );
+            //                 },
+            //               ),
+            //             ],
+            //           );
+            //         } else {
+            //           return Center(
+            //             child: Text('NO DATA'),
+            //           );
+            //         }
+            //       },
+            //     ),
+            //     beginOffset: Offset(0, 0.3),
+            //     endOffset: Offset(0, 0),
+            //     slideCurve: Curves.linearToEaseOut,
+            //   ),
+            // ),
 
             // FeeDetailsTabBar(),
           ],
@@ -414,6 +478,14 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
       ),
     );
   }
+
+  // String fixedFee(int index) {
+  //   if (feeFullJson!.data![index].isMandatory == 1) {
+  //     totalFee += feeFullJson!.data![index].fixedFee!;
+  //   }
+  //
+  //   return feeFullJson!.data![index].fixedFee.toString();
+  // }
 
   Row buildItemProperty(
       BuildContext context, String title, Widget trailing1, Widget trailing2,
@@ -461,9 +533,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
         // Spacer(
         //   flex: 1,
         // ),
-        SizedBox(width: 20),
-        GestureDetector(child: trailing1, onTap: () {}),
         SizedBox(width: 15),
+        GestureDetector(child: trailing1, onTap: () {}),
+        SizedBox(width: 5),
       ],
     );
   }

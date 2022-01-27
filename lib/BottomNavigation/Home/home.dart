@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Image.asset(
                       'assets/imgs/Layer 1150.png',
-                      height: 260,
+                      height: 220,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.fill,
                     ),
@@ -246,11 +246,11 @@ class _HomePageState extends State<HomePage> {
                                 .copyWith(fontSize: 18),
                           ),
                           SizedBox(
-                            height: 8,
+                            height: 0,
                           ),
                           // CustomGridView(_quickPays),
                           SizedBox(
-                            height: 200,
+                            height: 170,
                             child: FutureBuilder<List<Student>>(
                               future: _future,
                               builder: (context, snapshot) {
