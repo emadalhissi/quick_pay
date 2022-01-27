@@ -20,6 +20,29 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   late Future<FeeFullJson?> _future;
   bool _isChecked = false;
 
+  List<bool> _isCheckedList = <bool>[
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+
   // var _isCheckedArray;
 
   @override
@@ -113,10 +136,10 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                     } else if (snapshot.data != null) {
                       feeFullJson = snapshot.data;
                       // List<bool> _checkBoxes = <bool>();
-                      // _isCheckedArray = List.generate(feeFullJson!.data!.length, (index) => _isChecked);
-                      var _isCheckedArray = List<bool>.filled(
-                          feeFullJson!.data!.length, false,
-                          growable: true);
+                      // _isCheckedList = List.generate(feeFullJson!.data!.length, (index) => _isChecked);
+                      // var _isCheckedArray = List<bool>.filled(
+                      //     feeFullJson!.data!.length, false,
+                      //     growable: true);
                       return ListView(
                         children: [
                           // Container(),
@@ -134,39 +157,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                               ),
                             ),
                           ),
-                          CheckboxListTile(
-                            value: _isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                _isChecked = value!;
-                              });
-                            },
-                            title: buildItemProperty(
-                              context,
-                              // _feeList[index].subFee != null ? _feeList[index].subFee! : '',
-                              'dddd',
-                              Text(
-                                'ccc'
-                                    .toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox.shrink(),
-                              // SizedBox(
-                              //   width: 20,
-                              //   height: 20,
-                              //   child: Checkbox(
-                              //     value: false,
-                              //     onChanged: (v){},
-                              //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              //   ),
-                              // ),
-                            ),
-                          ),
                           ListView.builder(
                             shrinkWrap: true,
                             physics: BouncingScrollPhysics(),
@@ -175,54 +165,62 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                             itemBuilder: (context, index) {
                               return Material(
                                 elevation: 0.5,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 24, vertical: 16),
-                                  child: buildItemProperty(
-                                    context,
-                                    // _feeList[index].subFee != null ? _feeList[index].subFee! : '',
-                                    feeFullJson!.data![index].subFee!,
-                                    Text(
-                                      feeFullJson!.data![index].orderBy!
-                                          .toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Checkbox(
-                                        value: feeFullJson!
-                                                    .data![index].isMandatory ==
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CheckboxListTile(
+                                    activeColor:
+                                        feeFullJson!.data![index].isMandatory ==
+                                                1
+                                            ? Color(0xffbdbdbd)
+                                            : Color(0xff1976d3),
+                                    tristate: true,
+                                    value:
+                                        feeFullJson!.data![index].isMandatory ==
                                                 1
                                             ? true
-                                            : _isCheckedArray[index],
-                                        onChanged: feeFullJson!
-                                                    .data![index].isMandatory ==
-                                                1
-                                            ? null
-                                            : (value) {
-                                                setState(
-                                                  () {
-                                                    _isCheckedArray[index] =
-                                                        value!;
-                                                  },
-                                                );
-                                              },
-                                        // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            : _isCheckedList[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _isCheckedList[index] =
+                                            !_isCheckedList[index];
+                                      });
+                                    },
+                                    title: buildItemProperty(
+                                      context,
+                                      feeFullJson!.data![index].subFee!,
+                                      // 'fed',
+                                      Text(
+                                        feeFullJson!.data![index].orderBy!
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5!
+                                            .copyWith(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
+                                      SizedBox.shrink(),
+                                      // SizedBox(
+                                      //   width: 20,
+                                      //   height: 20,
+                                      //   child: Checkbox(
+                                      //     value: false,
+                                      //     onChanged: (v){},
+                                      //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      //   ),
+                                      // ),
                                     ),
                                   ),
                                 ),
                               );
                             },
                           ),
+                          // Container(
+                          //   color: Colors.red,
+                          //   width: double.infinity,
+                          //   height: 50,
+                          // ),
                         ],
                       );
                     } else {
@@ -249,6 +247,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
       BuildContext context, String title, Widget trailing1, Widget trailing2,
       {Color? textColor}) {
     return Row(
+      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: Text(
@@ -257,7 +256,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                 .textTheme
                 .subtitle1!
                 .copyWith(color: textColor),
-            overflow: TextOverflow.ellipsis,
+            // overflow: TextOverflow.ellipsis,
           ),
         ),
         // Spacer(
