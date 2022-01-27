@@ -25,7 +25,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   late TextEditingController feeEditingController;
 
   // num totalFee = SharedPreferencesController().getTotalFee;
-  num totalFee = 0;
+  num totalFee = 0 +  SharedPreferencesController().getTotalFee;
   List<bool> _isCheckedList = <bool>[
     false,
     false,
@@ -149,6 +149,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.data != null) {
                       feeFullJson = snapshot.data;
+
                       num fee = 0;
                       for (int i = 0; i < feeFullJson!.data!.length; i++) {
                         if (feeFullJson!.data![i].isMandatory == 1) {
@@ -156,15 +157,10 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                           fee += feeFullJson!.data![i].fixedFee!;
                         }
                       }
-                      // feeEditingController.text = totalFee.toString();
-                      totalFee = fee;
                       print('$totalFee');
-                      // WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-                      //   totalFee = fee;
-                      // }));
-                      // SharedPreferencesController().setTotalFee(
-                      //     totalFee: int.parse(totalFee.toString()));
-                      // print('saved to sp');
+                      SharedPreferencesController().setTotalFee(
+                          totalFee: int.parse(fee.toString()));
+                      print('fee of $fee saved to sp');
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
