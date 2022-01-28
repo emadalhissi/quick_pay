@@ -432,7 +432,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Total Fee: ${feePayHistory!.feePayHistoryData!.fixedFee}',
+                                                'Total Fee ',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2!
@@ -441,7 +441,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                                     ),
                                               ),
                                               Text(
-                                                'Paid: ${feePayHistory!.feePayHistoryData!.paidFee}',
+                                                'Paid ',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2!
@@ -450,7 +450,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                                     ),
                                               ),
                                               Text(
-                                                'Balance: ${feePayHistory!.feePayHistoryData!.balance}',
+                                                'Balance ',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2!
@@ -460,6 +460,40 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                               ),
                                             ],
                                           ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                ': ${feePayHistory!.feePayHistoryData!.fixedFee}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!
+                                                    .copyWith(
+                                                      fontSize: 14,
+                                                    ),
+                                              ),
+                                              Text(
+                                                ': ${feePayHistory!.feePayHistoryData!.paidFee}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!
+                                                    .copyWith(
+                                                      fontSize: 14,
+                                                    ),
+                                              ),
+                                              Text(
+                                                ': ${feePayHistory!.feePayHistoryData!.balance}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!
+                                                    .copyWith(
+                                                      fontSize: 14,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                          Spacer(),
                                           Container(
                                             width: 40,
                                             height: 40,
@@ -502,8 +536,10 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   ReceiptScreen(
-                                                orderId: '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
-                                                sid: '${feePayHistory!.feePayHistoryData!.transaction![index].studentId}',
+                                                orderId:
+                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
+                                                sid:
+                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].studentId}',
                                               ),
                                             ),
                                           );

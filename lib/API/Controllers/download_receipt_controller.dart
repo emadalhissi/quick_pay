@@ -29,7 +29,9 @@ class DownloadReceiptController with ApiHelper {
       headers: headers,
     );
     print('${response.statusCode.toString()} !!');
-    print('${response.body}');
+    var data = jsonDecode(response.body)['data'];
+    print('Body: ${response.body}');
+    print('Data: $data');
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {
