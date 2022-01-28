@@ -271,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  EducationFeesScreen(),
+                                                  EducationFeesScreen(id: _studentsList[index].studentId),
                                             ),
                                           );
                                         },
@@ -413,58 +413,6 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 8,
                 ),
-                // if (_anchoredBanner != null)
-                //   Container(
-                //     width: _anchoredBanner!.size.width.toDouble(),
-                //     height: _anchoredBanner!.size.height.toDouble(),
-                //     child: AdWidget(ad: _anchoredBanner!),
-                //   ),
-                // SizedBox(
-                //   height: 8,
-                // ),
-                // Stack(
-                //   children: [
-                //     Image.asset(
-                //       'assets/imgs/Layer 1194.png',
-                //       height: 200,
-                //       width: MediaQuery.of(context).size.width,
-                //       fit: BoxFit.fill,
-                //     ),
-                //     Padding(
-                //       padding: const EdgeInsets.only(
-                //           left: 8, right: 8, top: 18, bottom: 8),
-                //       child: Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Text(
-                //             locale.saveOnBillPayments!,
-                //             style: Theme.of(context)
-                //                 .textTheme
-                //                 .bodyText1!
-                //                 .copyWith(fontSize: 16),
-                //           ),
-                //           SizedBox(
-                //             height: 8,
-                //           ),
-                //           SizedBox(
-                //             height: 135,
-                //             child: ListView.builder(
-                //                 // padding: EdgeInsets.symmetric(horizontal: 8),
-                //                 physics: BouncingScrollPhysics(),
-                //                 scrollDirection: Axis.horizontal,
-                //                 itemCount: 3,
-                //                 itemBuilder: (context, index) {
-                //                   return CustomOffersContainer();
-                //                 }),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // SizedBox(
-                //   height: 12,
-                // ),
                 WinterSaleBanner(),
                 SizedBox(
                   height: 30,
