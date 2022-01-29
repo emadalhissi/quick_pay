@@ -9,7 +9,7 @@ Map<String, String> english() {
     'phoneNumber': 'Phone Number',
     'password': 'Password',
     'forgot': 'Forgot?',
-    'notRegisteredYet': 'Not Registered yet?',
+    'notRegisteredYet': 'Not Registered your School yet?',
     'registerNow': 'Register Now',
     'registerNownGet': 'Register now & get',
     'ultimateExpOf': 'Ultimate experience of',

@@ -11,6 +11,7 @@ import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
+import 'package:quick_pay/Screens/register_screen.dart';
 import 'package:quick_pay/Theme/assets.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
@@ -98,40 +99,6 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                   ],
                   keyboardType: TextInputType.number,
                 ),
-                // Material(
-                //   color: theme.scaffoldBackgroundColor,
-                //   elevation: 2,
-                //   child: TextField(
-                //     controller: _passwordEditingController,
-                //     decoration: InputDecoration(
-                //       hintText: locale.password,
-                //       border: OutlineInputBorder(borderSide: BorderSide.none),
-                //       prefixIcon: Image.asset(
-                //         Assets.passwordIcon,
-                //         scale: 2.5,
-                //       ),
-                //       suffixIcon: GestureDetector(
-                //         onTap: () {
-                //           widget.loginInteractor.forgotPassword();
-                //         },
-                //         child: Padding(
-                //           padding: const EdgeInsets.symmetric(
-                //               vertical: 16.0, horizontal: 12),
-                //           child: Text(
-                //             locale.forgot!,
-                //             style: Theme.of(context)
-                //                 .textTheme
-                //                 .bodyText1!
-                //                 .copyWith(
-                //                   color: Theme.of(context).primaryColorLight,
-                //                 ),
-                //             textAlign: TextAlign.center,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: InkWell(
@@ -144,26 +111,29 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                   ),
                 ),
                 SizedBox(
-                  height: 24,
+                  height: 50,
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.all(16.0),
-                //   child: InkWell(
-                //     onTap: () async {
-                //       List<Student> st = [];
-                //       st = await _DBProviderController.read();
-                //       if (st.isNotEmpty) {
-                //         for (int i = 0; i < st.length; i++) {
-                //           print("data item " + st[i].email);
-                //         }
-                //         print('PRINT DATABASE++');
-                //       }
-                //     },
-                //     child: CustomButton(
-                //       "Print DataBase",
-                //     ),
-                //   ),
-                // ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Powered by',
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Colors.grey.shade600,
+                          ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'Surena Management Solutions Pvt. Ltd.,',
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontSize: 16,
+                            color: Colors.grey.shade600,
+                          ),
+                    ),
+                  ],
+                ),
               ],
             ),
             PositionedDirectional(
@@ -181,7 +151,11 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                     child: CustomButton(
                       locale.registerNow!.toUpperCase(),
                       onTap: () {
-                        widget.loginInteractor.signUp();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterScreen(),
+                            ));
                       },
                       textColor: transparentColor,
                       color: theme.scaffoldBackgroundColor,
