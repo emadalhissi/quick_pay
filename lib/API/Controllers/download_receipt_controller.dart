@@ -22,16 +22,13 @@ class DownloadReceiptController with ApiHelper {
       url,
       body: jsonEncode(
         {
-          'studentId': orderId,
-          'sid': sid,
+          'studentId': 'VPSUDP_VPSUDP1298_2108453135',
+          'sid': '1298',
         },
       ),
       headers: headers,
     );
     print('${response.statusCode.toString()} !!');
-    var data = jsonDecode(response.body)['data'];
-    print('Body: ${response.body}');
-    print('Data: $data');
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {

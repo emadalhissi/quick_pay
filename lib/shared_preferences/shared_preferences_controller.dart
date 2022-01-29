@@ -106,22 +106,9 @@ class SharedPreferencesController {
   Future<bool> logout() async {
     return await _sharedPrefLibObj.setBool(SPKeys.loggedIn.toString(), false);
   }
+
+  Future<bool> clear() async {
+    return await _sharedPrefLibObj.clear();
+  }
 }
-//
-// SharedPreferencesController().setstudentId1(studentId1: 'AISKGL1');
-// SharedPreferencesController().setstdname1(stdname1: 'Aadvika G ');
-// SharedPreferencesController().setschool_code1(school_code1: 'AISKGL');
-// SharedPreferencesController().setschool_name1(school_name1: 'Arvind International School');
-// SharedPreferencesController().setschool_logo1(school_logo1: '');
-//
-// SharedPreferencesController().setstudentId2(studentId2: 'AISKGL2');
-// SharedPreferencesController().setstdname2(stdname2: 'Aditya M ');
-// SharedPreferencesController().setschool_code2(school_code2: 'AISKGL');
-// SharedPreferencesController().setschool_name2(school_name2: 'Arvind International School');
-// SharedPreferencesController().setschool_logo2(school_logo2: '');
-//
-// SharedPreferencesController().setstudentId3(studentId3: 'AISKGL5595');
-// SharedPreferencesController().setstdname3(stdname3: 'Sumanth N ');
-// SharedPreferencesController().setschool_code3(school_code3: 'AISKGL');
-// SharedPreferencesController().setschool_name3(school_name3: 'Arvind International School');
-// SharedPreferencesController().setschool_logo3(school_logo3: '');
+

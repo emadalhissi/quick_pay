@@ -19,4 +19,5 @@ abstract class DbOperations<T> {
 
   Future<bool> delete(int id);
   Future<bool> deleteDateToUser(int id);
+  Future<bool> clearDb();
 }

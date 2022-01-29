@@ -10,12 +10,4 @@ class DownloadReceipt {
     data = json['data'];
     message = json['message'];
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['resultCode'] = this.resultCode;
-    data['data'] = this.data;
-    data['message'] = this.message;
-    return data;
-  }
 }

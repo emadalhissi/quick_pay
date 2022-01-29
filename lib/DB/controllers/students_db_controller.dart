@@ -27,6 +27,16 @@ class StudentDbController implements DbOperations<Student> {
   }
 
   @override
+  Future<bool> clearDb() async {
+    int numberOfDeletedRows = await _database.delete(
+      'STUDENTS'
+    );
+    return numberOfDeletedRows > 0;
+
+  }
+
+
+  @override
   Future<List<Student>> read() async {
     // TODO: implement read
     // SELECT * FROM contacts;
