@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
+import 'package:quick_pay/Components/edu_fee_pay_text_logo2.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,13 +27,15 @@ class TncPage extends StatelessWidget {
                   title: Text(locale.tnc!),
                 ),
                 PositionedDirectional(
-                    top: 120,
-                    start: 100,
-                    end: 100,
-                    child: Image.asset(
-                      'assets/logo.png',
-                      scale: 4,
-                    )),
+                  top: 150,
+                  start: 150,
+                  // end: 100,
+                  child: EduFeePayTextLogo2(),
+                  // child: Image.asset(
+                  //   'assets/logo.png',
+                  //   scale: 4,
+                  // ),
+                ),
               ],
             ),
             Padding(
@@ -294,7 +298,7 @@ class TncPage extends StatelessWidget {
                     children: [
                       Text('Mob: '),
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           print('number clicked');
                           launchURL('tel: +919916773896');
                         },
@@ -309,7 +313,7 @@ class TncPage extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       print('email clicked');
                       launchURL('mailto: support@surena.in');
                     },

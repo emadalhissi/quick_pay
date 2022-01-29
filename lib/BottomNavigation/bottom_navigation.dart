@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:quick_pay/BottomNavigation/Account/account_page.dart';
 import 'package:quick_pay/BottomNavigation/Mall/mall_page.dart';
 import 'package:quick_pay/BottomNavigation/Orders/my_orders.dart';
+import 'package:quick_pay/BottomNavigation/Orders/my_orders_soon.dart';
+import 'package:quick_pay/BottomNavigation/Questions/questions_page.dart';
+import 'package:quick_pay/BottomNavigation/Scan/scan_page_soon.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/colors.dart';
@@ -17,9 +20,9 @@ class _AppNavigationState extends State<AppNavigation> {
 
   final List<Widget> _children = [
     HomePage(),
-    MallPage(),
-    Container(),
-    MyOrdersPage(),
+    QuestionsPage(),
+    ScanQRPageSoon(),
+    MyOrdersPageSoon(),
     AccountPage(),
   ];
 
@@ -37,10 +40,10 @@ class _AppNavigationState extends State<AppNavigation> {
       BottomNavigationBarItem(
           icon: ImageIcon(
             AssetImage(
-              'assets/icons/footer menu/ic_mall.png',
+              'assets/icons/ic_help.png',
             ),
           ),
-          label: locale.mall),
+          label: 'Question'),
       BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/footer menu/ic_scane.png',
@@ -73,10 +76,11 @@ class _AppNavigationState extends State<AppNavigation> {
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 2) {
-            Navigator.pushNamed(context, PageRoutes.scanPage);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ScanQRPageSoon(),));
           }
           setState(() {
             _currentIndex = index != 2 ? index : _currentIndex;
+            // _currentIndex = index;
           });
         },
       ),

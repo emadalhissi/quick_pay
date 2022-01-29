@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_pay/Components/custom_button.dart';
-import 'package:quick_pay/Components/quick_pay_text.dart';
+import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Theme/colors.dart';
 
@@ -18,7 +18,7 @@ class _GetPaymentPageState extends State<GetPaymentPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: blackColor),
         centerTitle: true,
-        title: QuickPayText(),
+        title: EduFeePayTextLogo(),
         actions: [IconButton(icon: Icon(Icons.share), onPressed: () {})],
       ),
       body: FadedSlideAnimation(

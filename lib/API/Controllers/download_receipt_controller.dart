@@ -22,8 +22,8 @@ class DownloadReceiptController with ApiHelper {
       url,
       body: jsonEncode(
         {
-          'studentId': 'VPSUDP_VPSUDP1298_2108453135',
-          'sid': '1298',
+          'orderId': '$orderId',
+          'sid': '$sid',
         },
       ),
       headers: headers,

@@ -10,12 +10,13 @@ import 'package:flutter/services.dart';
 import 'package:quick_pay/BottomNavigation/Home/Pages/book_ticket.dart';
 import 'package:quick_pay/Components/custom_offers_container.dart';
 import 'package:quick_pay/Components/custom_options_grid_view.dart';
-import 'package:quick_pay/Components/quick_pay_text.dart';
+import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/Components/winter_sale_widget.dart';
 import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
+import 'package:quick_pay/Screens/add_student_screen.dart';
 import 'package:quick_pay/Screens/education_fees_screen.dart';
 import 'package:quick_pay/Theme/style.dart';
 
@@ -127,6 +128,7 @@ class _HomePageState extends State<HomePage> {
         'Add Student',
         () {
           print('Add Student Clicked!');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddStudentScreen(),));
         },
       ),
     ];
@@ -199,8 +201,8 @@ class _HomePageState extends State<HomePage> {
                           TextField(
                             readOnly: true,
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, PageRoutes.searchPage);
+                              // Navigator.pushNamed(
+                              //     context, PageRoutes.searchPage);
                             },
                             decoration: InputDecoration(
                               filled: true,
@@ -209,9 +211,9 @@ class _HomePageState extends State<HomePage> {
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12.0, horizontal: 10),
-                                child: QuickPayText(),
+                                child: EduFeePayTextLogo(),
                               ),
-                              suffixIcon: Icon(Icons.search),
+                              // suffixIcon: Icon(Icons.search),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
                                   borderSide: BorderSide.none),
@@ -411,12 +413,24 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 SizedBox(
-                  height: 8,
+                  height: 10,
                 ),
-                WinterSaleBanner(),
-                SizedBox(
-                  height: 30,
+                // WinterSaleBanner(),
+                Container(
+                  height: 200,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    // color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('assets/imgs/covid.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
+                // SizedBox(
+                //   height: 30,
+                // ),
               ],
             ),
           ),
