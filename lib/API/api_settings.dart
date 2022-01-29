@@ -8,4 +8,5 @@ class ApiSettings {
   static const String getFeeList = _apiBaseUrl + 'action=getFeeList';
   static const String getStdDetails = _apiBaseUrl + 'action=getStdDetails';
   static const String downloadReceipt = _apiBaseUrl + 'action=downloadReceipt';
+  static const String initiatePayment = _apiBaseUrl + 'action=initiatePayment1';
 }

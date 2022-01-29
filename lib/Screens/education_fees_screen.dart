@@ -26,6 +26,8 @@ class EducationFeesScreen extends StatefulWidget {
 }
 
 class _EducationFeesScreenState extends State<EducationFeesScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   var myMenuItems = <String>[];
 
   late FeeFullJson? feeFullJson;
@@ -373,7 +375,191 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                                         child: MyCustomButton(
                                           'PAY NOW',
                                           onTap: () {
-                                            print('PAY NOw CLICKED');
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  insetPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  content: Container(
+                                                    // height: 200,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25),
+                                                    ),
+                                                    child: Stack(
+                                                      children: [
+                                                        Form(
+                                                          key: _formKey,
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Align(
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child: Text(
+                                                                      'Choose Payment Option', style: Theme.of(context)
+                                                                      .textTheme
+                                                                      .headline5!
+                                                                      .copyWith(
+                                                                    fontSize: 18,
+                                                                    fontWeight: FontWeight.w500,
+                                                                  ),),
+                                                                ),
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 10),
+                                                              Column(
+                                                                children: [
+                                                                  ElevatedButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      'UPI: PhonePe, GooglePe, Paytm etc...',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .headline5!
+                                                                          .copyWith(
+                                                                            fontSize:
+                                                                                15,
+                                                                            // fontWeight: FontWeight.bold,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                    ),
+                                                                    style: ElevatedButton
+                                                                        .styleFrom(
+                                                                      minimumSize: Size(
+                                                                          double
+                                                                              .infinity,
+                                                                          50),
+                                                                      elevation:
+                                                                          0,
+                                                                      primary:
+                                                                          Color(
+                                                                              0xff00b04d),
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(0),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          15),
+                                                                  ElevatedButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      'Debit Card / Credit Card, Net Banking',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .headline5!
+                                                                          .copyWith(
+                                                                            fontSize:
+                                                                                15,
+                                                                            // fontWeight: FontWeight.bold,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                    ),
+                                                                    style: ElevatedButton
+                                                                        .styleFrom(
+                                                                      minimumSize: Size(
+                                                                          double
+                                                                              .infinity,
+                                                                          50),
+                                                                      elevation:
+                                                                          0,
+                                                                      primary:
+                                                                          Color(
+                                                                              0xff3a2720),
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(0),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          25),
+                                                                  ElevatedButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          'Note:\nSample Instructions',
+                                                                          style: Theme.of(
+                                                                              context)
+                                                                              .textTheme
+                                                                              .headline5!
+                                                                              .copyWith(
+                                                                            fontSize:
+                                                                            15,
+                                                                            // fontWeight: FontWeight.bold,
+                                                                            color:
+                                                                            Color(0xffe14942),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    style: ElevatedButton
+                                                                        .styleFrom(
+                                                                      minimumSize: Size(
+                                                                          double
+                                                                              .infinity,
+                                                                          50),
+                                                                      elevation:
+                                                                          0,
+                                                                      primary:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(0),
+                                                                        side:
+                                                                            BorderSide(
+                                                                          color:
+                                                                              Color(0xffe14942),
+                                                                          width:
+                                                                              1,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
                                           },
                                         ),
                                       ),
