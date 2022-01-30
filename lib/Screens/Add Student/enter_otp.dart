@@ -15,8 +15,8 @@ import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class EnterOtpScreen extends StatefulWidget {
-
   final List<Student> studentList;
+
   const EnterOtpScreen({
     Key? key,
     required this.studentList,
@@ -95,8 +95,8 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with ApiHelper {
               SizedBox(height: 50),
               loading == true
                   ? Center(
-                child: CircularProgressIndicator(),
-              )
+                      child: CircularProgressIndicator(),
+                    )
                   : SizedBox.shrink(),
             ],
           ),
@@ -157,12 +157,19 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with ApiHelper {
       for (int i = 0; i < widget.studentList.length; i++) {
         await _DBProviderController.create(widget.studentList[i]);
       }
-      print('SAVE DATABASE++');
+      print('SAVED TO DATABASE++');
       setState(() {
         loading = false;
       });
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => AppNavigation()));
+        context,
+        MaterialPageRoute(builder: (context) => AppNavigation()),
+      );
+      showSnackBar(
+        context,
+        message: 'Students Added Successfully',
+        margin: 200,
+      );
     }
   }
 }

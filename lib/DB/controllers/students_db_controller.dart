@@ -11,7 +11,14 @@ class StudentDbController implements DbOperations<Student> {
   @override
   Future<int> create(Student object) async {
     // INSERT INTO contact (name, phone) VALUES ('Name','1234');
-    return await _database.insert('STUDENTS', object.toMap());
+    var queryResult = await _database.rawQuery('SELECT * FROM STUDENTS WHERE studentId="${object.studentId}"');
+
+    if(queryResult.isEmpty)
+      {
+        return await _database.insert('STUDENTS', object.toMap());
+      }
+return 0;
+    // return await _database.insert('STUDENTS', object.toMap());
   }
 
   @override
