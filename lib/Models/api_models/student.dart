@@ -9,7 +9,7 @@ class Student {
   late String chatid;
   late String admission_number;
   late String contacts;
-  late String email_address;
+  late String? email_address;
   late String school_code;
   late String? country;
   late String? biller_id;
@@ -17,6 +17,12 @@ class Student {
   late String? school_name;
   late String? school_logo;
   late String? email;
+
+  late int? cgroupId;
+  late String? cgroupName;
+  late int? courseId;
+  late int? sectionId;
+  late String? sectionName;
 
   Student.fromJson(Map<String, dynamic> json) {
     studentId = json['studentId'];
@@ -28,7 +34,7 @@ class Student {
     chatid = json['chatid'];
     admission_number = json['admission_number'];
     contacts = json['contacts'];
-    email_address = json['email_address'];
+
     school_code = json['school_code'];
     country = json['country'];
     biller_id = json['biller_id'];
@@ -36,6 +42,12 @@ class Student {
     school_name = json['school_name'];
     school_logo = json['school_logo'];
     email = json['email'];
+    email_address = json['email_address'];
+    cgroupId = json['cgroup_id'];
+    cgroupName = json['cgroup_name'];
+    courseId = json['course_id'];
+    sectionId = json['section_id'];
+    sectionName = json['section_name'];
   }
 
   Student.fromMap(Map<String, dynamic> json) {
@@ -57,6 +69,12 @@ class Student {
     school_name = json['schoolName'];
     school_logo = json['schoolLogo'];
     email = json['email'];
+
+    cgroupId = json['cgroupId'];
+    cgroupName = json['cgroupName'];
+    courseId = json['courseId'];
+    sectionId = json['sectionId'];
+    sectionName = json['sectionName'];
   }
 
   Map<String, dynamic> toMap() {
@@ -78,6 +96,13 @@ class Student {
     data['schoolName'] = this.school_name;
     data['schoolLogo'] = this.school_logo;
     data['email'] = this.email;
+
+    data['cgroupId'] = this.cgroupId;
+    data['cgroupName'] = this.cgroupName;
+    data['courseId'] = this.courseId;
+    data['sectionId'] = this.sectionId;
+    data['sectionName'] = this.sectionName;
+
     return data;
   }
 }

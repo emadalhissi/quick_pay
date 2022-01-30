@@ -40,6 +40,7 @@ class StudentDbController implements DbOperations<Student> {
   Future<List<Student>> read() async {
     // TODO: implement read
     // SELECT * FROM contacts;
+    print('check read');
     List<Map<String, dynamic>> rowsMap = await _database.query('STUDENTS');
     return rowsMap.map((Map<String, dynamic> rowMap) => Student.fromMap(rowMap)).toList();
   }

@@ -2,7 +2,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
-import 'package:quick_pay/API/Controllers/get_students_details.dart';
+import 'package:quick_pay/API/Controllers/Add%20Student/get_students_details.dart';
 import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
@@ -203,13 +203,13 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
     setState(() {
       loading = true;
     });
-    List<Student> status = await GetStudentDetailsByMobile()
+    List<Student> studentList = await GetStudentDetailsByMobile()
         .getStudentsByMobile(context, mobile: _mobileEditingController.text);
-    if (status.isNotEmpty) {
+    if (studentList.isNotEmpty) {
       print('LOGIN DONE++');
       SharedPreferencesController().login();
-      for (int i = 0; i < status.length; i++) {
-        await _DBProviderController.create(status[i]);
+      for (int i = 0; i < studentList.length; i++) {
+        await _DBProviderController.create(studentList[i]);
       }
       print('SAVE DATABASE++');
       setState(() {

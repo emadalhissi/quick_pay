@@ -16,6 +16,7 @@ import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
+import 'package:quick_pay/Screens/Add%20Student/select_state.dart';
 import 'package:quick_pay/Screens/add_student_screen.dart';
 import 'package:quick_pay/Screens/education_fees_screen.dart';
 import 'package:quick_pay/Theme/style.dart';
@@ -128,7 +129,8 @@ class _HomePageState extends State<HomePage> {
         'Add Student',
         () {
           print('Add Student Clicked!');
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddStudentScreen(),));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => AddStudentScreen(),));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectStateScreen(),));
         },
       ),
     ];
@@ -258,6 +260,7 @@ class _HomePageState extends State<HomePage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData &&
                                     snapshot.data!.isNotEmpty) {
+                                  print('check');
                                   _studentsList = snapshot.data ?? [];
                                 }
                                 return ListView.builder(
