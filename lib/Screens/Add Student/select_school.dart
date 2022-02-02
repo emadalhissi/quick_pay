@@ -27,6 +27,7 @@ class _SelectSchoolScreenState extends State<SelectSchoolScreen> {
   late Future<List<School>> _schoolFuture;
 
   late TextEditingController schoolEditingController;
+  List<School> searchResult = <School>[];
 
   @override
   void initState() {
@@ -58,59 +59,99 @@ class _SelectSchoolScreenState extends State<SelectSchoolScreen> {
         ),
         iconTheme: IconThemeData(color: blackColor),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: schoolEditingController,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsetsDirectional.only(start: 12),
-                hintText: 'Search School',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                    width: 1,
+      body: FutureBuilder<List<School>>(
+        future: _schoolFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            _schoolList = snapshot.data ?? [];
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: schoolEditingController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsetsDirectional.only(start: 12),
+                      hintText: 'Search School',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    onChanged: (String searchText) {
+                      setState(() {
+                        searchResult.clear();
+                        for (int i = 0; i < _schoolList.length; i++) {
+                          if (_schoolList[i]
+                              .schoolName!
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
+                            print('check change');
+                            searchResult.add(_schoolList[i]);
+                          }
+                        }
+                      });
+                    },
                   ),
                 ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          FutureBuilder<List<School>>(
-            future: _schoolFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                _schoolList = snapshot.data ?? [];
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _schoolList.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EnterMobileScreen(
-                              stateId: widget.stateId,
-                              districtIId: widget.districtIId,
-                              schoolId: _schoolList[index].schoolId.toString(),
-                            ),
-                          ),
-                        );
-                      },
-                      title: Text('${_schoolList[index].schoolName}'),
-                    );
-                  },
-                );
-              } else {
-                return Center();
-              }
-            },
-          )
-        ],
+                searchResult.length != 0 ||
+                        schoolEditingController.text.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: searchResult.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EnterMobileScreen(
+                                    stateId: widget.stateId,
+                                    districtIId: widget.districtIId,
+                                    schoolId:
+                                    searchResult[index].schoolId.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            title: Text('${searchResult[index].schoolName}'),
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _schoolList.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EnterMobileScreen(
+                                    stateId: widget.stateId,
+                                    districtIId: widget.districtIId,
+                                    schoolId:
+                                        _schoolList[index].schoolId.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            title: Text('${_schoolList[index].schoolName}'),
+                          );
+                        },
+                      ),
+              ],
+            );
+          } else {
+            return Center(
+              child: Text('NO SCHOOLS FOUND'),
+            );
+          }
+        },
       ),
     );
   }

@@ -13,4 +13,7 @@ class ApiSettings {
   static const String districtList = _apiBaseUrl + 'action=feepayDistrictList';
   static const String schoolList = _apiBaseUrl + 'action=feepaySchoolList';
   static const String getStdDetails = _apiBaseUrl + 'action=getStdDetails';
+
+  static const String saveQuestions = _apiBaseUrl + 'action=saveQuestions';
+  static const String feepayRegistration = _apiBaseUrl + 'action=feepayRegistration';
 }

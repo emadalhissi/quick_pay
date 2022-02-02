@@ -23,6 +23,7 @@ class _SelectDistrictScreenState extends State<SelectDistrictScreen> {
   late Future<List<District>> _districtFuture;
 
   late TextEditingController districtEditingController;
+  List<District> searchResult = <District>[];
 
   @override
   void initState() {
@@ -54,56 +55,95 @@ class _SelectDistrictScreenState extends State<SelectDistrictScreen> {
         ),
         iconTheme: IconThemeData(color: blackColor),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: districtEditingController,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsetsDirectional.only(start: 12),
-                hintText: 'Search District',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                    width: 1,
+      body: FutureBuilder<List<District>>(
+        future: _districtFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            _districtList = snapshot.data ?? [];
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: districtEditingController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsetsDirectional.only(start: 12),
+                      hintText: 'Search District',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    onChanged: (String searchText) {
+                      setState(() {
+                        searchResult.clear();
+                        for (int i = 0; i < _districtList.length; i++) {
+                          if (_districtList[i]
+                              .districtName!
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
+                            print('check change');
+                            searchResult.add(_districtList[i]);
+                          }
+                        }
+                      });
+                    },
                   ),
                 ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          FutureBuilder<List<District>>(
-            future: _districtFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                _districtList = snapshot.data ?? [];
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _districtList.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SelectSchoolScreen(stateId: widget.stateId,
-                                districtIId: _districtList[index].districtId!),
-                          ),
-                        );
-                      },
-                      title: Text('${_districtList[index].districtName}'),
-                    );
-                  },
-                );
-              } else {
-                return Center();
-              }
-            },
-          )
-        ],
+                searchResult.length != 0 ||
+                        districtEditingController.text.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: searchResult.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectSchoolScreen(
+                                      stateId: widget.stateId,
+                                      districtIId:
+                                      searchResult[index].districtId!),
+                                ),
+                              );
+                            },
+                            title: Text('${searchResult[index].districtName}'),
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _districtList.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectSchoolScreen(
+                                      stateId: widget.stateId,
+                                      districtIId:
+                                          _districtList[index].districtId!),
+                                ),
+                              );
+                            },
+                            title: Text('${_districtList[index].districtName}'),
+                          );
+                        },
+                      ),
+              ],
+            );
+          } else {
+            return Center(
+              child: Text('NO DISTRICT FOUND'),
+            );
+          }
+        },
       ),
     );
   }
