@@ -20,7 +20,7 @@ Map<String, String> english() {
     'createPassword': 'Create Password',
     'confirmPassword': 'Confirm Password',
     'phoneVerification': 'Phone Verification',
-    'enter6digitcode': 'Enter 6 digit verification code',
+    'enter6digitcode': 'Enter 4 digit verification code',
     'sentOnGivenNum': 'sent on given phone number.',
     'enterCodeHere': 'Enter code here',
     'codeResend': 'Code Resend',

@@ -143,6 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -165,6 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -187,6 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -209,6 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -231,6 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -254,6 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                     ),
                   ),
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -276,6 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -298,6 +305,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -321,6 +329,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                     ),
                   ),
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -344,6 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                     ),
                   ),
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -367,6 +377,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ApiHelper {
                       ),
                     ),
                   ),
+                  textInputAction: TextInputAction.send,
                 ),
                 SizedBox(height: 15),
                 InkWell(

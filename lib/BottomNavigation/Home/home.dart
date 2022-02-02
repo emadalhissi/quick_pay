@@ -420,7 +420,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 // WinterSaleBanner(),
                 Container(
-                  height: 200,
+                  height: 150,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     // color: Colors.redAccent,

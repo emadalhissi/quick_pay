@@ -6,6 +6,7 @@ import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/entry_field.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
@@ -16,7 +17,10 @@ class VerificationUI extends StatefulWidget {
   @override
   _VerificationUIState createState() => _VerificationUIState();
 
-  VerificationUI(this.verificationInteractor);
+  VerificationUI(this.verificationInteractor,{
+    Key? key,
+
+  }) : super(key: key);
 }
 
 class _VerificationUIState extends State<VerificationUI> with ApiHelper {
@@ -159,7 +163,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
     var code = SharedPreferencesController().getOtpCode.toString();
     bool status = code == _codeEditingController.text ? true : false;
     if (status) {
-      await SharedPreferencesController().login();
+      SharedPreferencesController().login();
       // showSnackBar(context, message: 'Thank you for coming back!');
       setState(() {
         loading = false;
@@ -167,10 +171,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => AppNavigation(
-              // () =>
-              //     Navigator.popAndPushNamed(context, PageRoutes.bottomNavigation),
-              ),
+          builder: (context) => AppNavigation(),
         ),
       );
     } else {

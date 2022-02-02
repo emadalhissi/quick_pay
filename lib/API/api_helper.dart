@@ -5,7 +5,8 @@ mixin ApiHelper {
       BuildContext context, {
         required String message,
         bool error = false,
-        int margin = 100,
+        bool fromBottom = false,
+        double margin = 100,
       }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -15,7 +16,7 @@ mixin ApiHelper {
         dismissDirection: DismissDirection.horizontal,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height - margin,
+          bottom: fromBottom == true ? margin : MediaQuery.of(context).size.height - margin,
           right: 20,
           left: 20,
         ),

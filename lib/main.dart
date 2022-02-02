@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quick_pay/Auth/login_navigator.dart';
 import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/DB/db_provider.dart';
+import 'package:quick_pay/Screens/launch_screen.dart';
 import 'package:quick_pay/language_cubit.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,7 +53,7 @@ class QuickPay extends StatelessWidget {
           locale: appLocale,
           debugShowCheckedModeBanner: false,
           theme: appTheme,
-          home: SharedPreferencesController().loggedIn ? AppNavigation() : LoginNavigator(),
+          home: LaunchScreen(),
           // home: LoginNavigator(),
           routes: PageRoutes().routes(),
         );

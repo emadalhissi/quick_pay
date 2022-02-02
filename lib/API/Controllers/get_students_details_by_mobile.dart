@@ -22,7 +22,7 @@ class GetStudentDetailsByMobile with ApiHelper {
       ),
       headers: headers,
     );
-    print('${response.statusCode}'); // 200
+    print('${response.statusCode}');
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {
@@ -34,6 +34,8 @@ class GetStudentDetailsByMobile with ApiHelper {
       showSnackBar(
         context,
         message: message,
+        fromBottom: true,
+        margin: 100,
       );
       SharedPreferencesController().setOtpCode(otpCode: otpCode);
       print('$otpCode');

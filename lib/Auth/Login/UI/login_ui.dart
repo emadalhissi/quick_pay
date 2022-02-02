@@ -1,16 +1,15 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quick_pay/API/Controllers/auth_api_controller.dart';
-import 'package:quick_pay/API/Controllers/Add%20Student/get_students_details.dart';
 import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
 import 'package:quick_pay/Components/custom_button.dart';
+import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
+import 'package:quick_pay/Components/launch_edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/DB/controllers/students_db_controller.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
-import 'package:quick_pay/Routes/routes.dart';
 import 'package:quick_pay/Screens/register_screen.dart';
 import 'package:quick_pay/Theme/assets.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
@@ -73,7 +72,8 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
                             .copyWith(color: theme.scaffoldBackgroundColor),
                       ),
                     ),
-                    Image.asset(Assets.appLogo, scale: 2.5),
+                    // Image.asset(Assets.appLogo, scale: 2.5),
+                    LaunchEduFeePayTextLogo(),
                     Positioned(
                       bottom: 50,
                       child: loading
@@ -207,7 +207,6 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
         .getStudentsByMobile(context, mobile: _mobileEditingController.text);
     if (studentList.isNotEmpty) {
       print('LOGIN DONE++');
-      SharedPreferencesController().login();
       for (int i = 0; i < studentList.length; i++) {
         await _DBProviderController.create(studentList[i]);
       }

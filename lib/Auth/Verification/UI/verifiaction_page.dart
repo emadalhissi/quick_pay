@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quick_pay/Auth/Verification/UI/verification_interactor.dart';
 import 'package:quick_pay/Auth/Verification/UI/verification_ui.dart';
+import 'package:quick_pay/Models/api_models/student.dart';
 
 class VerificationPage extends StatefulWidget {
   final VoidCallback? onVerificationDone;
-
   VerificationPage(this.onVerificationDone);
 
   @override
