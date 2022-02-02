@@ -1,31 +1,45 @@
+import 'dart:math';
+
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_pay/API/Controllers/fee_pay_history_controller.dart';
 import 'package:quick_pay/API/Controllers/get_fee_list.dart';
+import 'package:quick_pay/API/Controllers/icici_qr_code_controller.dart';
+import 'package:quick_pay/API/Controllers/initiate_payment_controller.dart';
+import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/my_custom_button.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/fee_full_json.dart';
 import 'package:quick_pay/Models/api_models/fee_list.dart';
 import 'package:quick_pay/Models/api_models/fee_pay_history.dart';
+import 'package:quick_pay/Models/api_models/icici_qr_code.dart';
+import 'package:quick_pay/Models/api_models/initiate_payment.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
+import 'package:quick_pay/Models/icici_qr_code_full_response.dart';
 import 'package:quick_pay/Screens/receipt_screen.dart';
 import 'package:quick_pay/Theme/assets.dart';
 import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/Theme/style.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
+import 'package:quick_pay/Models/api_models/icici_qr_code.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EducationFeesScreen extends StatefulWidget {
-  final String id;
+  final Student student;
 
-  const EducationFeesScreen({Key? key, required this.id}) : super(key: key);
+  const EducationFeesScreen({
+    Key? key,
+    required this.student,
+  }) : super(key: key);
 
   @override
   _EducationFeesScreenState createState() => _EducationFeesScreenState();
 }
 
-class _EducationFeesScreenState extends State<EducationFeesScreen> {
+class _EducationFeesScreenState extends State<EducationFeesScreen>
+    with ApiHelper {
   final _formKey = GlobalKey<FormState>();
 
   var myMenuItems = <String>[];
@@ -45,6 +59,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   // num totalFee = 0 + SharedPreferencesController().getTotalFee;
   num totalFee = 0;
   num conveyanceFee = 0;
+  bool loading = false;
   List<bool> _isCheckedList = <bool>[
     false,
     false,
@@ -74,16 +89,15 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
   void initState() {
     super.initState();
 
-    _feeFullJsonFuture = GetFeeList().getFeeList(context, id: widget.id);
-    _feePayHistoryFuture =
-        FeePayHistoryController().getFeePayHistory(context, id: widget.id);
+    _feeFullJsonFuture =
+        GetFeeList().getFeeList(context, id: widget.student.studentId);
+    _feePayHistoryFuture = FeePayHistoryController()
+        .getFeePayHistory(context, id: widget.student.studentId);
     // feeEditingController = TextEditingController();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    // feeEditingController.dispose();
     super.dispose();
   }
 
@@ -184,391 +198,226 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
                       // SharedPreferencesController()
                       //     .setTotalFee(totalFee: int.parse(fee.toString()));
                       // print('fee of $fee saved to sp');
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      return Stack(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: ListView(
-                              children: [
-                                // Container(),
-                                Material(
-                                  elevation: 0.5,
-                                  color: Colors.grey.shade300,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 24, vertical: 16),
-                                    child: buildItemProperty(
-                                      context,
-                                      feeFullJson!.notes!,
-                                      SizedBox.shrink(),
-                                      SizedBox.shrink(),
-                                    ),
-                                  ),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.symmetric(vertical: 5),
-                                  itemCount: feeFullJson!.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 5),
-                                      child: Material(
-                                        elevation: 0.8,
-                                        child: Padding(
-                                          padding: EdgeInsets.zero,
-                                          child: CheckboxListTile(
-                                            activeColor: feeFullJson!
-                                                        .data![index]
-                                                        .isMandatory ==
-                                                    1
-                                                ? Color(0xffbdbdbd)
-                                                : Color(0xff1976d3),
-                                            tristate: true,
-                                            value: feeFullJson!.data![index]
-                                                        .isMandatory ==
-                                                    1
-                                                ? true
-                                                : _isCheckedList[index],
-                                            onChanged: (value) {
-                                              setState(() {
-                                                // _isCheckedList[index] =
-                                                //     !_isCheckedList[index];
-                                                if (feeFullJson!.data![index]
-                                                        .isMandatory ==
-                                                    1) {
-                                                  totalFee += 0;
-                                                  // feeEditingController.text = totalFee.toString();
-                                                } else if (_isCheckedList[
-                                                        index] ==
-                                                    false) {
-                                                  _isCheckedList[index] = true;
-                                                  setState(() {
-                                                    totalFee += feeFullJson!
-                                                        .data![index].fixedFee!;
-                                                  });
-                                                  // feeEditingController.text =
-                                                  //     totalFee.toString();
-                                                } else {
-                                                  _isCheckedList[index] = false;
-                                                  totalFee -= feeFullJson!
-                                                      .data![index].fixedFee!;
-                                                  // feeEditingController.text =
-                                                  //     totalFee.toString();
-                                                }
-                                              });
-                                            },
-                                            title: myBuildItemProperty(
-                                              context,
-                                              feeFullJson!.data![index].subFee!,
-                                              // 'fed',
-                                              Text(
-                                                feeFullJson!
-                                                    .data![index].fixedFee
-                                                    .toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5!
-                                                    .copyWith(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                              // SizedBox(
-                                              //   width: 20,
-                                              //   height: 20,
-                                              //   child: Checkbox(
-                                              //     value: false,
-                                              //     onChanged: (v){},
-                                              //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              //   ),
-                                              // ),
-                                            ),
-                                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: ListView(
+                                  children: [
+                                    // Container(),
+                                    Material(
+                                      elevation: 0.5,
+                                      color: Colors.grey.shade300,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 16),
+                                        child: buildItemProperty(
+                                          context,
+                                          feeFullJson!.notes!,
+                                          SizedBox.shrink(),
+                                          SizedBox.shrink(),
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 0,
-                            child: Column(
-                              children: [
-                                // Expanded(child: Center()),
-                                Container(
-                                  color: Colors.white,
-                                  width: double.infinity,
-                                  // height: 50,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 5),
-                                        child: Container(
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                              color: Colors.black,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsetsDirectional
-                                                            .only(
-                                                        start: 15, top: 5),
-                                                child: Text(
-                                                  '₹',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline5!
-                                                      .copyWith(
-                                                        fontSize: 19,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 5),
+                                      itemCount: feeFullJson!.data!.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 5),
+                                          child: Material(
+                                            elevation: 0.8,
+                                            child: Padding(
+                                              padding: EdgeInsets.zero,
+                                              child: CheckboxListTile(
+                                                activeColor: feeFullJson!
+                                                            .data![index]
+                                                            .isMandatory ==
+                                                        1
+                                                    ? Color(0xffbdbdbd)
+                                                    : Color(0xff1976d3),
+                                                tristate: true,
+                                                value: feeFullJson!.data![index]
+                                                            .isMandatory ==
+                                                        1
+                                                    ? true
+                                                    : _isCheckedList[index],
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    // _isCheckedList[index] =
+                                                    //     !_isCheckedList[index];
+                                                    if (feeFullJson!
+                                                            .data![index]
+                                                            .isMandatory ==
+                                                        1) {
+                                                      totalFee += 0;
+                                                      // feeEditingController.text = totalFee.toString();
+                                                    } else if (_isCheckedList[
+                                                            index] ==
+                                                        false) {
+                                                      _isCheckedList[index] =
+                                                          true;
+                                                      setState(() {
+                                                        totalFee += feeFullJson!
+                                                            .data![index]
+                                                            .fixedFee!;
+                                                      });
+                                                      // feeEditingController.text =
+                                                      //     totalFee.toString();
+                                                    } else {
+                                                      _isCheckedList[index] =
+                                                          false;
+                                                      totalFee -= feeFullJson!
+                                                          .data![index]
+                                                          .fixedFee!;
+                                                      // feeEditingController.text =
+                                                      //     totalFee.toString();
+                                                    }
+                                                  });
+                                                },
+                                                title: myBuildItemProperty(
+                                                  context,
+                                                  feeFullJson!
+                                                      .data![index].subFee!,
+                                                  // 'fed',
+                                                  Text(
+                                                    feeFullJson!
+                                                        .data![index].fixedFee
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline5!
+                                                        .copyWith(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                  // SizedBox(
+                                                  //   width: 20,
+                                                  //   height: 20,
+                                                  //   child: Checkbox(
+                                                  //     value: false,
+                                                  //     onChanged: (v){},
+                                                  //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                  //   ),
+                                                  // ),
                                                 ),
                                               ),
-                                              SizedBox(width: 17),
-                                              Text(
-                                                (totalFee + mandatoryFee)
-                                                    .toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5!
-                                                    .copyWith(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Conveyance Fee: ' +
-                                            calcConveyanceFee(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5!
-                                            .copyWith(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
                                             ),
-                                      ),
-                                      SizedBox(height: 7),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 5),
-                                        child: MyCustomButton(
-                                          'PAY NOW',
-                                          onTap: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  insetPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 10),
-                                                  content: Container(
-                                                    // height: 200,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25),
-                                                    ),
-                                                    child: Stack(
-                                                      children: [
-                                                        Form(
-                                                          key: _formKey,
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Align(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child: Text(
-                                                                      'Choose Payment Option', style: Theme.of(context)
-                                                                      .textTheme
-                                                                      .headline5!
-                                                                      .copyWith(
-                                                                    fontSize: 18,
-                                                                    fontWeight: FontWeight.w500,
-                                                                  ),),
-                                                                ),
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              Column(
-                                                                children: [
-                                                                  ElevatedButton(
-                                                                    onPressed:
-                                                                        () {},
-                                                                    child: Text(
-                                                                      'UPI: PhonePe, GooglePe, Paytm etc...',
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .headline5!
-                                                                          .copyWith(
-                                                                            fontSize:
-                                                                                15,
-                                                                            // fontWeight: FontWeight.bold,
-                                                                            color:
-                                                                                Colors.white,
-                                                                          ),
-                                                                    ),
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                      minimumSize: Size(
-                                                                          double
-                                                                              .infinity,
-                                                                          50),
-                                                                      elevation:
-                                                                          0,
-                                                                      primary:
-                                                                          Color(
-                                                                              0xff00b04d),
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(0),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          15),
-                                                                  ElevatedButton(
-                                                                    onPressed:
-                                                                        () {},
-                                                                    child: Text(
-                                                                      'Debit Card / Credit Card, Net Banking',
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .headline5!
-                                                                          .copyWith(
-                                                                            fontSize:
-                                                                                15,
-                                                                            // fontWeight: FontWeight.bold,
-                                                                            color:
-                                                                                Colors.white,
-                                                                          ),
-                                                                    ),
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                      minimumSize: Size(
-                                                                          double
-                                                                              .infinity,
-                                                                          50),
-                                                                      elevation:
-                                                                          0,
-                                                                      primary:
-                                                                          Color(
-                                                                              0xff3a2720),
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(0),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          25),
-                                                                  ElevatedButton(
-                                                                    onPressed:
-                                                                        () {},
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      children: [
-                                                                        Text(
-                                                                          'Note:\nSample Instructions',
-                                                                          style: Theme.of(
-                                                                              context)
-                                                                              .textTheme
-                                                                              .headline5!
-                                                                              .copyWith(
-                                                                            fontSize:
-                                                                            15,
-                                                                            // fontWeight: FontWeight.bold,
-                                                                            color:
-                                                                            Color(0xffe14942),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                      minimumSize: Size(
-                                                                          double
-                                                                              .infinity,
-                                                                          50),
-                                                                      elevation:
-                                                                          0,
-                                                                      primary:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(0),
-                                                                        side:
-                                                                            BorderSide(
-                                                                          color:
-                                                                              Color(0xffe14942),
-                                                                          width:
-                                                                              1,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 0,
+                                child: Column(
+                                  children: [
+                                    // Expanded(child: Center()),
+                                    Container(
+                                      color: Colors.white,
+                                      width: double.infinity,
+                                      // height: 50,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: Container(
+                                              height: 48,
+                                              decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                  color: Colors.black,
+                                                  width: 1.5,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsetsDirectional
+                                                                .only(
+                                                            start: 15, top: 5),
+                                                    child: Text(
+                                                      '₹',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline5!
+                                                          .copyWith(
+                                                            fontSize: 19,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
-                                                        ),
-                                                      ],
                                                     ),
                                                   ),
-                                                );
+                                                  SizedBox(width: 17),
+                                                  Text(
+                                                    (totalFee + mandatoryFee)
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline5!
+                                                        .copyWith(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            'Conveyance Fee: ' +
+                                                calcConveyanceFee(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          SizedBox(height: 7),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: MyCustomButton(
+                                              'PAY NOW',
+                                              onTap: () async {
+                                                await performPayNow();
                                               },
-                                            );
-                                          },
-                                        ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
+                          loading == true
+                              ? Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                )
+                              : SizedBox.shrink(),
                         ],
                       );
                     } else {
@@ -926,6 +775,231 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
     );
   }
 
+  Future<void> performPayNow() async {
+    if (checkData()) {
+      print('check done');
+      await payNow();
+    }
+  }
+
+  bool checkData() {
+    if ((totalFee + mandatoryFee) == 0) {
+      showSnackBar(
+        context,
+        message: 'Please Choose Fee to Pay!',
+        error: true,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  num totalFeeToSend() {
+    num totalFeeToSend =
+        totalFee + mandatoryFee + num.parse(calcConveyanceFee());
+    print('Total Fee To Send: $totalFeeToSend');
+    return totalFeeToSend;
+  }
+
+  Future<void> payNow() async {
+    print('check from payNow++');
+    setState(() {
+      loading = true;
+    });
+
+    InitiatePayment? initiatePayment =
+        await InitiatePaymentController().initiatePayment(
+      context,
+      amount: '${totalFeeToSend()}',
+      schoolCode: widget.student.school_code,
+      studentId: widget.student.studentId,
+      orderId: '${generateOrderId()}',
+      subFeeAmount: 1,
+      subFeeId: 1,
+    );
+    if (initiatePayment != null) {
+      print('check inside IF++');
+      setState(() {
+        loading = false;
+      });
+      showUsDialog();
+    }
+  }
+
+  int randomNumber() {
+    var random = Random().nextInt(9000000) + 1000000;
+    print('Random: $random');
+    return random;
+  }
+
+  String generateOrderId() {
+    String orderId =
+        '${widget.student.school_code}_${widget.student.sid}_${randomNumber()}';
+    print('Generated Order Id: $orderId');
+    return orderId;
+  }
+
+  Future<void> showUsDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 10),
+          content: Container(
+            // height: 200,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Stack(
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Choose Payment Option',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Stack(
+                        children: [
+                          Column(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await upiPaymentOption();
+                                },
+                                child: Text(
+                                  'UPI: PhonePe, GooglePe, Paytm etc...',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontSize: 15,
+                                        // fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 50),
+                                  elevation: 0,
+                                  primary: Color(0xff00b04d),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'Debit Card / Credit Card, Net Banking',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontSize: 15,
+                                        // fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 50),
+                                  elevation: 0,
+                                  primary: Color(0xff3a2720),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 25),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Note:\nSample Instructions',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5!
+                                          .copyWith(
+                                            fontSize: 15,
+                                            // fontWeight: FontWeight.bold,
+                                            color: Color(0xffe14942),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(double.infinity, 50),
+                                  elevation: 0,
+                                  primary: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                    side: BorderSide(
+                                      color: Color(0xffe14942),
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          loading == true
+                              ? Center(child: CircularProgressIndicator())
+                              : SizedBox.shrink(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> upiPaymentOption() async {
+    //FOR CALLING IcIciQRCode
+    Navigator.pop(context);
+    setState(() {
+      loading = true;
+    });
+    IcIciQRCodeFullResponse? qrCode =
+        await IcIciQRCodeController().getIcIciQrCode(
+      context,
+      amount: totalFeeToSend().toString(),
+      orderId: generateOrderId(),
+    );
+    if (qrCode != null) {
+      print('QR Code != null');
+      setState(() {
+        loading = false;
+      });
+      launchURL('${qrCode.data!.qrUrl}');
+      // launchURL('https://web.whatsapp.com/');
+    }
+  }
+
+  void launchURL(String url) async {
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch!';}
+
   String paymentStatus(int index) {
     if (feePayHistory!.feePayHistoryData!.transaction![index].fundTransStatus ==
         'PAYMENT SUCCESS') {
@@ -942,7 +1016,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
     if (feeFullJson!.conveyancetype == 'fixed') {
       return feeFullJson!.conveyancefee!;
     } else if (feeFullJson!.conveyancetype == 'percentage') {
-      num percentage = totalFee * num.parse(feeFullJson!.conveyancefee!) / 100;
+      num percentage = (totalFee + mandatoryFee) *
+          num.parse(feeFullJson!.conveyancefee!) /
+          100;
       return percentage.toString();
     }
     return '0';
@@ -1001,50 +1077,3 @@ class _EducationFeesScreenState extends State<EducationFeesScreen> {
     );
   }
 }
-
-// class Order {
-//   String orderNo;
-//   String price;
-//   String image;
-//   String? title;
-//   String subtitle;
-//
-//   Order(this.orderNo, this.price, this.image, this.title, this.subtitle);
-// }
-
-// class FeeDetailsTabBar extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     var locale = AppLocalizations.of(context)!;
-//     final List<Order> _allOrders = [
-//       Order('221454', '10.00', 'assets/imgs/Layer 1741.png',
-//           locale.rechargeDone, 'AT&T +1 987 654 3210'),
-//       Order('114578', '15.00', 'assets/imgs/Layer 1753.png',
-//           locale.orderedSuccessful, 'Spyware White cotton Shirt'),
-//       Order('998745', '9.00', 'assets/imgs/Layer 1773.png',
-//           locale.electricityBillPaid, 'City Power Electricity Board'),
-//       Order('221454', '14.00', 'assets/imgs/Layer 1741.png',
-//           locale.rechargeDone, 'At&T +1 987 654 3210'),
-//       Order('114578', '20.00', 'assets/imgs/Layer 1753.png',
-//           locale.orderedSuccessful, 'Spyware White cotton Shirt'),
-//       Order('998745', '10.00', 'assets/imgs/Layer 1773.png',
-//           locale.electricityBillPaid, 'City Power Electricity Board'),
-//     ];
-//     return Container(
-//       color: Theme.of(context).backgroundColor,
-//       child: FadedSlideAnimation(
-//         FutureBuilder<List<FeeList>>(
-//           // future: _,
-//           builder: (context, snapshot) {
-//             return Center();
-//           },
-//         ),
-//         beginOffset: Offset(0, 0.3),
-//         endOffset: Offset(0, 0),
-//         slideCurve: Curves.linearToEaseOut,
-//       ),
-//     );
-//   }
-//
-//
-// }

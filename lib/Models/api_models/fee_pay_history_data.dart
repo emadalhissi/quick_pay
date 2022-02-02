@@ -7,12 +7,13 @@ class FeePayHistoryData {
   int? balance;
   String? orderId;
 
-  FeePayHistoryData(
-      {this.transaction,
-        this.fixedFee,
-        this.paidFee,
-        this.balance,
-        this.orderId});
+  FeePayHistoryData({
+    this.transaction,
+    this.fixedFee,
+    this.paidFee,
+    this.balance,
+    this.orderId,
+  });
 
   FeePayHistoryData.fromJson(Map<String, dynamic> json) {
     if (json['transaction'] != null) {

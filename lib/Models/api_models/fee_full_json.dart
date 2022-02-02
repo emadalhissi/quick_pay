@@ -8,13 +8,14 @@ class FeeFullJson {
   String? conveyancetype;
   String? message;
 
-  FeeFullJson(
-      {this.resultCode,
-        this.data,
-        this.notes,
-        this.conveyancefee,
-        this.conveyancetype,
-        this.message});
+  FeeFullJson({
+    this.resultCode,
+    this.data,
+    this.notes,
+    this.conveyancefee,
+    this.conveyancetype,
+    this.message,
+  });
 
   FeeFullJson.fromJson(Map<String, dynamic> json) {
     resultCode = json['resultCode'];
@@ -29,5 +30,4 @@ class FeeFullJson {
     conveyancetype = json['conveyancetype'];
     message = json['message'];
   }
-
 }

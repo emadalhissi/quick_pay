@@ -7,7 +7,6 @@ class ApiSettings {
   static const String feepayHistory1 = _apiBaseUrl + 'action=feepayHistory1';
   static const String getFeeList = _apiBaseUrl + 'action=getFeeList';
   static const String downloadReceipt = _apiBaseUrl + 'action=downloadReceipt';
-  static const String initiatePayment = _apiBaseUrl + 'action=initiatePayment1';
 
   static const String stateList = _apiBaseUrl + 'action=feepayStateList';
   static const String districtList = _apiBaseUrl + 'action=feepayDistrictList';
@@ -16,4 +15,7 @@ class ApiSettings {
 
   static const String saveQuestions = _apiBaseUrl + 'action=saveQuestions';
   static const String feepayRegistration = _apiBaseUrl + 'action=feepayRegistration';
+
+  static const String initiatePayment = _apiBaseUrl + 'action=initiatePayment1';
+  static const String iciciQRCode = _apiBaseUrl + 'action=iciciQRCode';
 }

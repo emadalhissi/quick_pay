@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  EducationFeesScreen(id: _studentsList[index].studentId),
+                                                  EducationFeesScreen(student: _studentsList[index]),
                                             ),
                                           );
                                         },
