@@ -15,6 +15,7 @@ enum SPKeys {
   token,
   noOfStd,
   totalFee,
+  generatedOrderId,
 }
 
 class SharedPreferencesController {
@@ -35,6 +36,14 @@ class SharedPreferencesController {
 
   Future<void> setTotalFee({required int totalFee}) async {
     await _sharedPrefLibObj.setInt(SPKeys.totalFee.toString(), totalFee);
+  }
+
+  String get getGeneratedOrderId =>
+      _sharedPrefLibObj.getString(SPKeys.generatedOrderId.toString()) ?? '';
+
+  Future<void> setGeneratedOrderId({required String generatedOrderId}) async {
+    await _sharedPrefLibObj.setString(
+        SPKeys.generatedOrderId.toString(), generatedOrderId);
   }
 
   int get getTotalFee =>
@@ -111,4 +120,3 @@ class SharedPreferencesController {
     return await _sharedPrefLibObj.clear();
   }
 }
-

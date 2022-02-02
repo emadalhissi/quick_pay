@@ -836,6 +836,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     String orderId =
         '${widget.student.school_code}_${widget.student.sid}_${randomNumber()}';
     print('Generated Order Id: $orderId');
+    SharedPreferencesController().setGeneratedOrderId(generatedOrderId: orderId);
     return orderId;
   }
 
@@ -985,7 +986,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         await IcIciQRCodeController().getIcIciQrCode(
       context,
       amount: totalFeeToSend().toString(),
-      orderId: generateOrderId(),
+      orderId: SharedPreferencesController().getGeneratedOrderId,
     );
     if (qrCode != null) {
       print('QR Code != null');
@@ -993,7 +994,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         loading = false;
       });
       launchURL('${qrCode.data!.qrUrl}');
-      // launchURL('https://web.whatsapp.com/');
     }
   }
 
