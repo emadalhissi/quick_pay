@@ -40,6 +40,7 @@ class EducationFeesScreen extends StatefulWidget {
 
 class _EducationFeesScreenState extends State<EducationFeesScreen>
     with ApiHelper {
+  late TextEditingController _amountEditingController;
   final _formKey = GlobalKey<FormState>();
 
   var myMenuItems = <String>[];
@@ -51,6 +52,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   late Future<FeePayHistory?> _feePayHistoryFuture;
 
   bool _isChecked = false;
+  bool snapShotDataIsNull = false;
 
   // late TextEditingController feeEditingController;
 
@@ -88,7 +90,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   @override
   void initState() {
     super.initState();
-
+    _amountEditingController = TextEditingController();
     _feeFullJsonFuture =
         GetFeeList().getFeeList(context, id: widget.student.studentId);
     _feePayHistoryFuture = FeePayHistoryController()
@@ -98,6 +100,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
 
   @override
   void dispose() {
+    _amountEditingController.dispose();
     super.dispose();
   }
 
@@ -185,6 +188,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.data != null) {
                       feeFullJson = snapshot.data;
+                      snapShotDataIsNull = false;
                       num fee = 0;
                       for (int i = 0; i < feeFullJson!.data!.length; i++) {
                         if (feeFullJson!.data![i].isMandatory == 1) {
@@ -420,9 +424,159 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                               : SizedBox.shrink(),
                         ],
                       );
+                    } else if (snapshot.data == null) {
+                      snapShotDataIsNull = true;
+                      return Stack(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: ListView(
+                                  children: [
+                                    Material(
+                                      elevation: 0.5,
+                                      color: Colors.grey.shade300,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 16),
+                                        child: buildItemProperty(
+                                          context,
+                                          feeFullJson!.notes!,
+                                          SizedBox.shrink(),
+                                          SizedBox.shrink(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 0,
+                                child: Column(
+                                  children: [
+                                    // Expanded(child: Center()),
+                                    Container(
+                                      color: Colors.white,
+                                      width: double.infinity,
+                                      // height: 50,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: TextField(
+                                              controller:
+                                                  _amountEditingController
+                                                    ..text = '0',
+                                              decoration: InputDecoration(
+                                                prefixIcon: Padding(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                              .only(
+                                                          start: 14, end: 10),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        '₹',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline5!
+                                                            .copyWith(
+                                                              fontSize: 19,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                prefixStyle: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle1!
+                                                    .copyWith(),
+                                                contentPadding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 12),
+                                                hintText: 'Enter Amount',
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            'Conveyance Fee: ' +
+                                                calcConveyanceFee(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          SizedBox(height: 7),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 5),
+                                            child: MyCustomButton(
+                                              'PAY NOW',
+                                              onTap: () async {
+                                                await performPayNow();
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          loading == true
+                              ? Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                )
+                              : SizedBox.shrink(),
+                        ],
+                      );
                     } else {
                       return Center(
-                        child: Text('NO DATA'),
+                        child: Text(
+                          'NO DATA',
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
                       );
                     }
                   },
@@ -783,22 +937,39 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   }
 
   bool checkData() {
-    if ((totalFee + mandatoryFee) == 0) {
-      showSnackBar(
-        context,
-        message: 'Please Choose Fee to Pay!',
-        error: true,
-      );
-      return false;
+    if (snapShotDataIsNull == false) {
+      if ((totalFee + mandatoryFee) == 0) {
+        showSnackBar(
+          context,
+          message: 'Please Choose Fee to Pay!',
+          error: true,
+        );
+        return false;
+      }
+    } else {
+      if (_amountEditingController.text.toString() == '') {
+        showSnackBar(
+          context,
+          message: 'Please Enter Fee to Pay!',
+          error: true,
+        );
+        return false;
+      }
     }
     return true;
   }
 
   num totalFeeToSend() {
-    num totalFeeToSend =
-        totalFee + mandatoryFee + num.parse(calcConveyanceFee());
-    print('Total Fee To Send: $totalFeeToSend');
-    return totalFeeToSend;
+    if (snapShotDataIsNull == false) {
+      num totalFeeToSend =
+          totalFee + mandatoryFee + num.parse(calcConveyanceFee());
+      print('Total Fee To Send: $totalFeeToSend');
+      return totalFeeToSend;
+    } else {
+      num totalFeeToSend = num.parse(_amountEditingController.text.toString());
+      print('Total Fee To Send (TextEditingController): $totalFeeToSend');
+      return totalFeeToSend;
+    }
   }
 
   Future<void> payNow() async {
@@ -832,11 +1003,12 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     return random;
   }
 
-  String generateOrderId() {
+  Future<String> generateOrderId() async {
     String orderId =
         '${widget.student.school_code}_${widget.student.sid}_${randomNumber()}';
-    print('Generated Order Id: $orderId');
-    SharedPreferencesController().setGeneratedOrderId(generatedOrderId: orderId);
+    print('Generated Order Id (First Call): $orderId');
+    await SharedPreferencesController()
+        .setGeneratedOrderId(generatedOrderId: orderId);
     return orderId;
   }
 
@@ -982,6 +1154,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     setState(() {
       loading = true;
     });
+    print('Generated Order Id (Second Call): ${SharedPreferencesController().getGeneratedOrderId}');
     IcIciQRCodeFullResponse? qrCode =
         await IcIciQRCodeController().getIcIciQrCode(
       context,
@@ -998,7 +1171,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   }
 
   void launchURL(String url) async {
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch!';}
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch!';
+  }
 
   String paymentStatus(int index) {
     if (feePayHistory!.feePayHistoryData!.transaction![index].fundTransStatus ==

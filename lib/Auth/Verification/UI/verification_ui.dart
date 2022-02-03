@@ -143,6 +143,8 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
         context,
         message: 'Please Enter Code!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     } else if (_codeEditingController.text.length != 4) {
@@ -150,6 +152,8 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
         context,
         message: 'Number must be 4 digits!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     }
@@ -175,10 +179,15 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
         ),
       );
     } else {
+      setState(() {
+        loading = false;
+      });
       showSnackBar(
         context,
         message: 'Wrong code!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
     }
   }

@@ -4,6 +4,7 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/Components/edu_fee_pay_text_logo2.dart';
+import 'package:quick_pay/Components/launch_edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,10 +28,10 @@ class TncPage extends StatelessWidget {
                   title: Text(locale.tnc!),
                 ),
                 PositionedDirectional(
-                  top: 150,
-                  start: 150,
+                  top: 165,
+                  start: MediaQuery.of(context).size.width / 3,
                   // end: 100,
-                  child: EduFeePayTextLogo2(),
+                  child: LaunchEduFeePayTextLogo(),
                   // child: Image.asset(
                   //   'assets/logo.png',
                   //   scale: 4,
