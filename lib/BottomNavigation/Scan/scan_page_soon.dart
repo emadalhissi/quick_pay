@@ -17,6 +17,8 @@ class _ScanQRPageSoonState extends State<ScanQRPageSoon> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        leading: SizedBox.shrink(),
+        leadingWidth: 0,
         title: Text(
           'Scan',
           style: Theme.of(context)

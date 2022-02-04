@@ -17,6 +17,8 @@ class _MyOrdersPageSoonState extends State<MyOrdersPageSoon> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        leading: SizedBox.shrink(),
+        leadingWidth: 0,
         title: Text(
           'Orders',
           style: Theme.of(context)

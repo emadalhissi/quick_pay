@@ -144,16 +144,16 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                 ],
               ),
               actions: [
-                PopupMenuButton<String>(
-                  itemBuilder: (context) {
-                    return myMenuItems.map((String string) {
-                      return PopupMenuItem<String>(
-                        child: Text(string),
-                        value: string,
-                      );
-                    }).toList();
-                  },
-                )
+                // PopupMenuButton<String>(
+                //   itemBuilder: (context) {
+                //     return myMenuItems.map((String string) {
+                //       return PopupMenuItem<String>(
+                //         child: Text(string),
+                //         value: string,
+                //       );
+                //     }).toList();
+                //   },
+                // ),
                 // GestureDetector(
                 //   onTap: () {},
                 //   child: Image.asset(
@@ -729,6 +729,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                     '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
                                                 sid:
                                                     '${feePayHistory!.feePayHistoryData!.transaction![index].studentId}',
+                                                    transactionId: '${feePayHistory!.feePayHistoryData!.transaction![index].transactionId}',
                                               ),
                                             ),
                                           );
@@ -1167,6 +1168,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         loading = false;
       });
       launchURL('${qrCode.data!.qrUrl}');
+
     }
   }
 

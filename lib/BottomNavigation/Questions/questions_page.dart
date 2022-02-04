@@ -43,6 +43,8 @@ class _QuestionsPageState extends State<QuestionsPage> with ApiHelper {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        leading: SizedBox.shrink(),
+        leadingWidth: 0,
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 2,
         title: Text(

@@ -60,6 +60,8 @@ class AccountPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppBar(
+                leading: SizedBox.shrink(),
+                leadingWidth: 0,
                 title: Text(
                   locale.account!,
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
