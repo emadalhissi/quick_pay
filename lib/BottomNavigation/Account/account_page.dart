@@ -18,6 +18,7 @@ class AccountTile {
 }
 
 class AccountPage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
@@ -70,46 +71,6 @@ class AccountPage extends StatelessWidget {
                       fontSize: 20),
                 ),
               ),
-              // Spacer(),
-              // // GestureDetector(
-              // //   onTap: () {
-              // //     Navigator.pushNamed(context, PageRoutes.myProfilePage);
-              // //   },
-              // //   child: Row(
-              // //     children: [
-              // //       Spacer(),
-              // //       Hero(
-              // //         tag: 'dp',
-              // //         child: CircleAvatar(
-              // //             radius: 40,
-              // //             backgroundImage:
-              // //                 AssetImage('assets/imgs/Layer 1032.png')),
-              // //       ),
-              // //       Spacer(),
-              // //       RichText(
-              // //           text: TextSpan(children: <TextSpan>[
-              // //         TextSpan(
-              // //             text: 'Sam Smith\n\n',
-              // //             style: Theme.of(context)
-              // //                 .textTheme
-              // //                 .bodyText1!
-              // //                 .copyWith(fontSize: 22, height: 0.7)),
-              // //         TextSpan(
-              // //             text: locale.viewProfile,
-              // //             style: Theme.of(context)
-              // //                 .textTheme
-              // //                 .bodyText1!
-              // //                 .copyWith(height: 0.5)),
-              // //       ])),
-              // //       Spacer(
-              // //         flex: 8,
-              // //       ),
-              // //     ],
-              // //   ),
-              // // ),
-              // Spacer(
-              //   flex: 3,
-              // ),
             ],
           ),
         ),

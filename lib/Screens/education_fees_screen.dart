@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quick_pay/API/Controllers/check_deep_link_payment_status.dart';
 import 'package:quick_pay/API/Controllers/fee_pay_history_controller.dart';
 import 'package:quick_pay/API/Controllers/get_fee_list.dart';
 import 'package:quick_pay/API/Controllers/icici_qr_code_controller.dart';
@@ -12,6 +13,7 @@ import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/my_custom_button.dart';
 import 'package:quick_pay/Locale/locales.dart';
+import 'package:quick_pay/Models/api_models/api_base_response.dart';
 import 'package:quick_pay/Models/api_models/fee_full_json.dart';
 import 'package:quick_pay/Models/api_models/fee_list.dart';
 import 'package:quick_pay/Models/api_models/fee_pay_history.dart';
@@ -40,7 +42,43 @@ class EducationFeesScreen extends StatefulWidget {
 }
 
 class _EducationFeesScreenState extends State<EducationFeesScreen>
-    with ApiHelper {
+    with ApiHelper, WidgetsBindingObserver {
+  late AppLifecycleState _notification;
+  String Status = '';
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        setState(() {
+          Status = 'resumed';
+        });
+        checkDeepLinkPayment();
+        break;
+      case AppLifecycleState.inactive:
+        print("app in inactive");
+        setState(() {
+          Status = 'inactive';
+        });
+        break;
+      case AppLifecycleState.paused:
+        print("app in paused");
+        setState(() {
+          Status = 'paused';
+        });
+        break;
+      case AppLifecycleState.detached:
+        print("app in detached");
+        setState(() {
+          Status = 'detached';
+        });
+        break;
+    }
+  }
+
   late TextEditingController _amountEditingController;
   final _formKey = GlobalKey<FormState>();
 
@@ -91,6 +129,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     _amountEditingController = TextEditingController();
     _feeFullJsonFuture =
         GetFeeList().getFeeList(context, id: widget.student.studentId);
@@ -102,6 +141,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   @override
   void dispose() {
     _amountEditingController.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -1167,6 +1207,17 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     );
   }
 
+  Future<void> checkDeepLinkPayment() async {
+    print('checkDeepLinkPaymentStatus is clicked!');
+
+    BaseApiResponse? baseApiResponse =
+        await CheckDeepLinkPaymentStatus().checkDeepLinkPaymentStatus(
+      context,
+      schoolCode: widget.student.school_code,
+      orderId: SharedPreferencesController().getGeneratedOrderId,
+    );
+  }
+
   Future<void> upiPaymentOption() async {
     //FOR CALLING IcIciQRCode
 
@@ -1189,9 +1240,14 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       });
 
       launchURL('${qrCode.data!.qrUrl}');
-      // Navigator.of(context, rootNavigator: true).pop();
-      // Navigator.pop(context);
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppNavigation(),));
+      // Future.delayed(Duration(seconds: 6), (){
+      //   if (Status == 'paused') {
+      //   print('-----------paused-----------');
+      // } else if (Status == 'resumed') {
+      //   print('-----------resumed-----------');
+      // }
+      // });
+
     }
   }
 

@@ -18,4 +18,5 @@ class ApiSettings {
 
   static const String initiatePayment = _apiBaseUrl + 'action=initiatePayment1';
   static const String iciciQRCode = _apiBaseUrl + 'action=iciciQRCode';
+  static const String checkDeepLinkPaymentStatus = _apiBaseUrl + 'action=checkDeepLinkPaymentStatus';
 }
