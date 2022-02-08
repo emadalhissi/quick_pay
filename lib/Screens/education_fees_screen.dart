@@ -1280,8 +1280,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       setState(() {
         loading = false;
       });
-      // launchURL('${qrCode.data!.qrUrl}')
-      launchURL('http://facebook.com/EmadAlhissi');
+      launchURL('${qrCode.data!.qrUrl}');
+      // launchURL('http://facebook.com/EmadAlhissi');
       didChangeAccessibilityFeatures();
     }
   }
