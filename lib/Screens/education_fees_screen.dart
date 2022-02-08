@@ -1077,11 +1077,11 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     return random;
   }
 
-  Future<String> generateOrderId() async {
+  String generateOrderId()  {
     String orderId =
         '${widget.student.school_code}_${widget.student.sid}_${randomNumber()}';
     print('Generated Order Id (First Call): $orderId');
-    await SharedPreferencesController()
+     SharedPreferencesController()
         .setGeneratedOrderId(generatedOrderId: orderId);
     return orderId;
   }
