@@ -15,6 +15,7 @@ import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/my_custom_button.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Models/api_models/api_base_response.dart';
+import 'package:quick_pay/Models/api_models/deep_link_payment_status_data.dart';
 import 'package:quick_pay/Models/api_models/fee_full_json.dart';
 import 'package:quick_pay/Models/api_models/fee_list.dart';
 import 'package:quick_pay/Models/api_models/fee_pay_history.dart';
@@ -23,6 +24,7 @@ import 'package:quick_pay/Models/api_models/initiate_payment.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
 import 'package:quick_pay/Models/icici_qr_code_full_response.dart';
 import 'package:quick_pay/Screens/receipt_screen.dart';
+import 'package:quick_pay/Screens/receipt_status_screen.dart';
 import 'package:quick_pay/Theme/assets.dart';
 import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/Theme/style.dart';
@@ -56,9 +58,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     }
     if (state == AppLifecycleState.resumed) {
       print('+++++++++++++++resumed+++++++++++++++');
-      testFunc();
+      checkDeepLinkPayment();
     }
-
   }
 
   // String didChangeAppLifecycleState(AppLifecycleState state) {
@@ -1225,12 +1226,24 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   Future<void> checkDeepLinkPayment() async {
     print('checkDeepLinkPaymentStatus is clicked!');
 
-    BaseApiResponse? baseApiResponse =
+    List<DeepLinkPaymentStatusData?> deepLinkPaymentStatusData =
         await CheckDeepLinkPaymentStatus().checkDeepLinkPaymentStatus(
       context,
-      schoolCode: widget.student.school_code,
-      orderId: SharedPreferencesController().getGeneratedOrderId,
+      schoolCode: 'VPSUDP',
+      orderId: 'VPSUDP_1298_100462227',
+      // schoolCode: widget.student.school_code,
+      // orderId: SharedPreferencesController().getGeneratedOrderId,
     );
+
+    if (deepLinkPaymentStatusData.length == 0) {
+      print('cancelled'.toUpperCase());
+    } else if (deepLinkPaymentStatusData[0]!.status == 'SUCCESS' ||
+        deepLinkPaymentStatusData[0]!.status == 'SUCCESS'.toLowerCase()) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptStatusScreen(),));
+    } else if (deepLinkPaymentStatusData[0]!.status == 'FAILED' ||
+        deepLinkPaymentStatusData[0]!.status == 'FAILED'.toLowerCase()) {
+      print('FAILED');
+    }
   }
 
   Future<void> upiPaymentOption() async {
@@ -1256,13 +1269,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       launchURL('${qrCode.data!.qrUrl}');
       didChangeAccessibilityFeatures();
     }
-  }
-
-  void testFunc() {
-    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
-    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
-    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
-    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
   }
 
   void launchURL(String url) async {

@@ -4,13 +4,15 @@ import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/API/api_settings.dart';
 import 'package:quick_pay/Models/api_models/api_base_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:quick_pay/Models/api_models/deep_link_payment_status_data.dart';
 
 class CheckDeepLinkPaymentStatus with ApiHelper {
-  Future<BaseApiResponse?> checkDeepLinkPaymentStatus(
+  Future<List<DeepLinkPaymentStatusData?>> checkDeepLinkPaymentStatus(
     BuildContext context, {
     required String schoolCode,
     required String orderId,
   }) async {
+    print('CheckDeepLinkPaymentStatus Controller is here!');
     var url = Uri.parse(ApiSettings.checkDeepLinkPaymentStatus);
     var response = await http.post(
       url,
@@ -24,15 +26,11 @@ class CheckDeepLinkPaymentStatus with ApiHelper {
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {
-      // var message = jsonDecode(response.body)['message'];
-      var jsonResponse = BaseApiResponse.fromJson(jsonDecode(response.body));
-      // showSnackBar(
-      //   context,
-      //   message: message,
-      //   margin: 150,
-      // );
-      return jsonResponse;
-    } else if (resultCode == 500) {
+      var jsonResponse = jsonDecode(response.body)['data'] as List;
+      var jsonResponseData =
+      jsonResponse.map((obj) => DeepLinkPaymentStatusData.fromJson(obj)).toList();
+      return jsonResponseData;
+    }  else if (resultCode == 500) {
       // var message = jsonDecode(response.body)['message'];
     } else {
       showSnackBar(
@@ -41,6 +39,6 @@ class CheckDeepLinkPaymentStatus with ApiHelper {
         error: true,
       );
     }
-    return null;
+    return [];
   }
 }
