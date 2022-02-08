@@ -1229,21 +1229,35 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     List<DeepLinkPaymentStatusData?> deepLinkPaymentStatusData =
         await CheckDeepLinkPaymentStatus().checkDeepLinkPaymentStatus(
       context,
-      schoolCode: 'VPSUDP',
-      orderId: 'VPSUDP_1298_100462227',
-      // schoolCode: widget.student.school_code,
-      // orderId: SharedPreferencesController().getGeneratedOrderId,
+      // schoolCode: 'VPSUDP',
+      // orderId: 'VPSUDP_1298_100462227',
+      schoolCode: widget.student.school_code,
+      orderId: SharedPreferencesController().getGeneratedOrderId,
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReceiptStatusScreen(
+          deepLinkPaymentStatusData: deepLinkPaymentStatusData,
+          student: widget.student,
+        ),
+      ),
     );
 
-    if (deepLinkPaymentStatusData.length == 0) {
-      print('cancelled'.toUpperCase());
-    } else if (deepLinkPaymentStatusData[0]!.status == 'SUCCESS' ||
-        deepLinkPaymentStatusData[0]!.status == 'SUCCESS'.toLowerCase()) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiptStatusScreen(),));
-    } else if (deepLinkPaymentStatusData[0]!.status == 'FAILED' ||
-        deepLinkPaymentStatusData[0]!.status == 'FAILED'.toLowerCase()) {
-      print('FAILED');
-    }
+    // if (deepLinkPaymentStatusData.length == 0) {
+    //   print('cancelled'.toUpperCase());
+    // } else if (deepLinkPaymentStatusData[0]!.status == 'SUCCESS' ||
+    //     deepLinkPaymentStatusData[0]!.status == 'SUCCESS'.toLowerCase()) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ReceiptStatusScreen(),
+    //     ),
+    //   );
+    // } else if (deepLinkPaymentStatusData[0]!.status == 'FAILED' ||
+    //     deepLinkPaymentStatusData[0]!.status == 'FAILED'.toLowerCase()) {
+    //   print('FAILED');
+    // }
   }
 
   Future<void> upiPaymentOption() async {
@@ -1266,7 +1280,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       setState(() {
         loading = false;
       });
-      launchURL('${qrCode.data!.qrUrl}');
+      // launchURL('${qrCode.data!.qrUrl}')
+      launchURL('http://facebook.com/EmadAlhissi');
       didChangeAccessibilityFeatures();
     }
   }

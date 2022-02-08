@@ -32,10 +32,10 @@ class _MyOrdersPageSoonState extends State<MyOrdersPageSoon> {
         Center(
           child: Text(
             'Update Soon',
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1!
-                .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
         beginOffset: Offset(0, 0.3),
