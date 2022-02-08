@@ -3,8 +3,8 @@ import 'package:quick_pay/Models/api_models/fee_pay_history_data_transaction_lis
 class FeePayHistoryData {
   List<Transaction>? transaction;
   String? fixedFee;
-  int? paidFee;
-  int? balance;
+  String? paidFee;
+  String? balance;
   String? orderId;
 
   FeePayHistoryData({

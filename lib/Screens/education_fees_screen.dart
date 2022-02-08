@@ -46,39 +46,53 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     with ApiHelper, WidgetsBindingObserver {
   late AppLifecycleState _notification;
   String Status = '';
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _notification = state;
-    });
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print("app in resumed");
-        setState(() {
-          Status = 'resumed';
-        });
-        checkDeepLinkPayment();
-        break;
-      case AppLifecycleState.inactive:
-        print("app in inactive");
-        setState(() {
-          Status = 'inactive';
-        });
-        break;
-      case AppLifecycleState.paused:
-        print("app in paused");
-        setState(() {
-          Status = 'paused';
-        });
-        break;
-      case AppLifecycleState.detached:
-        print("app in detached");
-        setState(() {
-          Status = 'detached';
-        });
-        break;
+    print('Entered didChangeAppLifecycleState');
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      print('+++++++++++++++paused+++++++++++++++');
     }
+    if (state == AppLifecycleState.resumed) {
+      print('+++++++++++++++resumed+++++++++++++++');
+      testFunc();
+    }
+
   }
+
+  // String didChangeAppLifecycleState(AppLifecycleState state) {
+  //   setState(() {
+  //     _notification = state;
+  //   });
+  //   switch (state) {
+  //     case AppLifecycleState.resumed:
+  //       print("app in resumed");
+  //       setState(() {
+  //         Status = 'resumed';
+  //       });
+  //       checkDeepLinkPayment();
+  //       break;
+  //     case AppLifecycleState.inactive:
+  //       print("app in inactive");
+  //       setState(() {
+  //         Status = 'inactive';
+  //       });
+  //       break;
+  //     case AppLifecycleState.paused:
+  //       print("app in paused");
+  //       setState(() {
+  //         Status = 'paused';
+  //       });
+  //       break;
+  //     case AppLifecycleState.detached:
+  //       print("app in detached");
+  //       setState(() {
+  //         Status = 'detached';
+  //       });
+  //       break;
+  //   }
+  // }
 
   late TextEditingController _amountEditingController;
   final _formKey = GlobalKey<FormState>();
@@ -1240,11 +1254,15 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         loading = false;
       });
       launchURL('${qrCode.data!.qrUrl}');
-      
-
-
-
+      didChangeAccessibilityFeatures();
     }
+  }
+
+  void testFunc() {
+    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++xxx++++++++++++++++++++++++++++++++++++++');
   }
 
   void launchURL(String url) async {
