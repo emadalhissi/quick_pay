@@ -3,11 +3,12 @@ import 'dart:math';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quick_pay/API/Controllers/check_deep_link_payment_status.dart';
-import 'package:quick_pay/API/Controllers/fee_pay_history_controller.dart';
-import 'package:quick_pay/API/Controllers/get_fee_list.dart';
-import 'package:quick_pay/API/Controllers/icici_qr_code_controller.dart';
-import 'package:quick_pay/API/Controllers/initiate_payment_controller.dart';
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/1_get_fee_list.dart';
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/4_check_deep_link_payment_status.dart';
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Fee%20History/fee_pay_history_controller.dart';
+
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/3_icici_qr_code_controller.dart';
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/2_initiate_payment_controller.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/custom_button.dart';
@@ -1047,7 +1048,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       subFeeId: 1,
     );
     if (initiatePayment != null) {
-      print('check inside IF++');
+      print('initiatePayment done');
       setState(() {
         loading = false;
       });
@@ -1238,15 +1239,10 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       setState(() {
         loading = false;
       });
-
       launchURL('${qrCode.data!.qrUrl}');
-      // Future.delayed(Duration(seconds: 6), (){
-      //   if (Status == 'paused') {
-      //   print('-----------paused-----------');
-      // } else if (Status == 'resumed') {
-      //   print('-----------resumed-----------');
-      // }
-      // });
+      
+
+
 
     }
   }

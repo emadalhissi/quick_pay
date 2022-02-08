@@ -15,7 +15,7 @@ class _VerificationPageState extends State<VerificationPage>
     implements VerificationInteractor {
   @override
   Widget build(BuildContext context) {
-    return VerificationUI(this);
+    return VerificationUI();
   }
 
   @override

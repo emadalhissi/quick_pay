@@ -12,12 +12,14 @@ import 'package:quick_pay/Theme/colors.dart';
 import 'package:quick_pay/shared_preferences/shared_preferences_controller.dart';
 
 class VerificationUI extends StatefulWidget {
-  final VerificationInteractor verificationInteractor;
+  // final VerificationInteractor verificationInteractor;
 
   @override
   _VerificationUIState createState() => _VerificationUIState();
 
-  VerificationUI(this.verificationInteractor,{
+  VerificationUI(
+      // this.verificationInteractor,
+      {
     Key? key,
 
   }) : super(key: key);
@@ -103,7 +105,7 @@ class _VerificationUIState extends State<VerificationUI> with ApiHelper {
                       locale.submit!.toUpperCase(),
                       onTap: () async {
                         await performVerify();
-                        widget.verificationInteractor.verificationDone();
+                        // widget.verificationInteractor.verificationDone();
                       },
                     ),
                   ),

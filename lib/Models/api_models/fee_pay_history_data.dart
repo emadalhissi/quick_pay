@@ -2,10 +2,10 @@ import 'package:quick_pay/Models/api_models/fee_pay_history_data_transaction_lis
 
 class FeePayHistoryData {
   List<Transaction>? transaction;
-  int? fixedFee;
+  String? fixedFee;
   int? paidFee;
   int? balance;
-  int? orderId;
+  String? orderId;
 
   FeePayHistoryData({
     this.transaction,

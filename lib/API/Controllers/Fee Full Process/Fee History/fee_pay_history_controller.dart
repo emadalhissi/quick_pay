@@ -15,6 +15,7 @@ class FeePayHistoryController with ApiHelper {
       BuildContext context, {
         required String id,
       }) async {
+    print('---getFeePayHistory start---');
     var url = Uri.parse(ApiSettings.feepayHistory1);
     var response = await http.post(
       url,
@@ -29,15 +30,16 @@ class FeePayHistoryController with ApiHelper {
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');
     if (resultCode == 200) {
+      print('---getFeePayHistory inside 200---');
       var feePayHistory = FeePayHistory.fromJson(jsonDecode(response.body));
       return feePayHistory;
     } else if (resultCode == 500) {
       var message = jsonDecode(response.body)['message'];
-      showSnackBar(
-        context,
-        message: message,
-        error: true,
-      );
+      // showSnackBar(
+      //   context,
+      //   message: message,
+      //   error: true,
+      // );
     } else {
       showSnackBar(
         context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_pay/Auth/Login/UI/login_ui.dart';
 import 'package:quick_pay/Auth/login_navigator.dart';
 import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/launch_edu_fee_pay_text_logo.dart';
@@ -22,7 +23,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
         MaterialPageRoute(
           builder: (context) => SharedPreferencesController().loggedIn
               ? AppNavigation()
-              : LoginNavigator(),
+              : LoginUI(),
         ),
       );
     });

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:quick_pay/API/Controllers/get_students_details_by_mobile.dart';
 import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/Auth/Verification/UI/verifiaction_page.dart';
+import 'package:quick_pay/Auth/Verification/UI/verification_ui.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/edu_fee_pay_text_logo.dart';
 import 'package:quick_pay/Components/launch_edu_fee_pay_text_logo.dart';
@@ -18,9 +19,11 @@ import '../../../Theme/colors.dart' show transparentColor;
 import 'login_interactor.dart';
 
 class LoginUI extends StatefulWidget {
-  final LoginInteractor loginInteractor;
+  // final LoginInteractor loginInteractor;
 
-  LoginUI(this.loginInteractor);
+  LoginUI(
+      // this.loginInteractor,
+      );
 
   @override
   _LoginUIState createState() => _LoginUIState();
@@ -218,7 +221,7 @@ class _LoginUIState extends State<LoginUI> with ApiHelper {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => VerificationPage(null),
+          builder: (context) => VerificationUI(),
         ),
       );
     }

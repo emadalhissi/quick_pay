@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quick_pay/API/Controllers/download_receipt_controller.dart';
+import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Fee%20History/download_receipt_controller.dart';
 import 'package:quick_pay/Models/api_models/download_receipt.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:share_plus/share_plus.dart';
