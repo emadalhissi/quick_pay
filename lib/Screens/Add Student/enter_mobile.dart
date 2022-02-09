@@ -148,6 +148,8 @@ class _EnterMobileScreenState extends State<EnterMobileScreen> with ApiHelper {
         context,
         message: 'Please Enter Number!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     } else if (mobileEditingController.text.length != 10) {
@@ -155,6 +157,8 @@ class _EnterMobileScreenState extends State<EnterMobileScreen> with ApiHelper {
         context,
         message: 'Number must be 10 digits!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     }

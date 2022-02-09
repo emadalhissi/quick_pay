@@ -5,6 +5,7 @@ import 'package:quick_pay/API/api_helper.dart';
 import 'package:quick_pay/API/api_settings.dart';
 import 'package:quick_pay/Models/api_models/initiate_payment.dart';
 import 'package:http/http.dart' as http;
+import 'package:quick_pay/Models/api_models/sub_fee_list.dart';
 
 class InitiatePaymentController with ApiHelper {
   Future<InitiatePayment?> initiatePayment(
@@ -14,8 +15,11 @@ class InitiatePaymentController with ApiHelper {
     required String schoolCode,
     required String studentId,
     required String orderId,
-    required int subFeeAmount,
-    required int subFeeId,
+
+    required List<SubFeeList> subFeeList,
+
+    // required int subFeeAmount,
+    // required int subFeeId,
   }) async {
     var url = Uri.parse(ApiSettings.initiatePayment);
     var response = await http.post(
@@ -26,15 +30,17 @@ class InitiatePaymentController with ApiHelper {
         'school_code': schoolCode,
         'student_id': studentId,
         'order_id': orderId,
-        'sub_fee_list': [
-          {
-            'amount': subFeeAmount,
-            'sub_fee_id': subFeeId,
-          }
-        ],
+        'sub_fee_list': subFeeList,
+        // 'sub_fee_list': [
+        //   {
+        //     'amount': subFeeAmount,
+        //     'sub_fee_id': subFeeId,
+        //   }
+        // ],
       }),
       headers: headers,
     );
+    print('2-InitiatePaymentController passed!'.toUpperCase());
     print('${response.statusCode}');
     var resultCode = jsonDecode(response.body)['resultCode'];
     print('$resultCode');

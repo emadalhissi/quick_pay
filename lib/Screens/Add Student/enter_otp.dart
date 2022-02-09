@@ -133,6 +133,8 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with ApiHelper {
         context,
         message: 'Please Enter OTP!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     } else if (otpEditingController.text.length != 4) {
@@ -140,6 +142,8 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with ApiHelper {
         context,
         message: 'OTP must be 4 digits!',
         error: true,
+        fromBottom: true,
+        margin: 100,
       );
       return false;
     }
@@ -151,7 +155,19 @@ class _EnterOtpScreenState extends State<EnterOtpScreen> with ApiHelper {
       loading = true;
     });
 
-    if (otpEditingController.text.toString() ==
+    if (otpEditingController.text.toString() !=
+        SharedPreferencesController().getOtpCode.toString()) {
+      setState(() {
+        loading = false;
+      });
+      showSnackBar(
+        context,
+        message: 'Wrong OTP Code, please try again!',
+        error: true,
+        fromBottom: true,
+        margin: 100,
+      );
+    } else if (otpEditingController.text.toString() ==
         SharedPreferencesController().getOtpCode.toString()) {
       print('Verification done++');
       for (int i = 0; i < widget.studentList.length; i++) {

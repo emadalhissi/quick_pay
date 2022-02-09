@@ -11,6 +11,13 @@ import 'package:quick_pay/Theme/colors.dart';
 import 'Home/home.dart';
 
 class AppNavigation extends StatefulWidget {
+  // final int currentIndex;
+
+  const AppNavigation({
+    Key? key,
+    // this.currentIndex = 0,
+  }) : super(key: key);
+
   @override
   _AppNavigationState createState() => _AppNavigationState();
 }
@@ -76,7 +83,11 @@ class _AppNavigationState extends State<AppNavigation> {
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 2) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ScanQRPageSoon(),));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScanQRPageSoon(),
+                ));
           }
           setState(() {
             _currentIndex = index != 2 ? index : _currentIndex;

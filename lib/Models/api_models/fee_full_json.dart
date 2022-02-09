@@ -6,6 +6,7 @@ class FeeFullJson {
   String? notes;
   String? conveyancefee;
   String? conveyancetype;
+  String? paymentNote;
   String? message;
 
   FeeFullJson({
@@ -14,6 +15,7 @@ class FeeFullJson {
     this.notes,
     this.conveyancefee,
     this.conveyancetype,
+    this.paymentNote,
     this.message,
   });
 
@@ -28,6 +30,7 @@ class FeeFullJson {
     notes = json['notes'];
     conveyancefee = json['conveyancefee'];
     conveyancetype = json['conveyancetype'];
+    paymentNote = json['paymentNote'];
     message = json['message'];
   }
 }

@@ -10,6 +10,7 @@ import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Fee%20History/fee
 import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/3_icici_qr_code_controller.dart';
 import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Payment/2_initiate_payment_controller.dart';
 import 'package:quick_pay/API/api_helper.dart';
+import 'package:quick_pay/BottomNavigation/Orders/my_orders_soon.dart';
 import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/custom_button.dart';
 import 'package:quick_pay/Components/my_custom_button.dart';
@@ -22,7 +23,9 @@ import 'package:quick_pay/Models/api_models/fee_pay_history.dart';
 import 'package:quick_pay/Models/api_models/icici_qr_code.dart';
 import 'package:quick_pay/Models/api_models/initiate_payment.dart';
 import 'package:quick_pay/Models/api_models/student.dart';
+import 'package:quick_pay/Models/api_models/sub_fee_list.dart';
 import 'package:quick_pay/Models/icici_qr_code_full_response.dart';
+import 'package:quick_pay/Screens/pay_by_card_screen.dart';
 import 'package:quick_pay/Screens/receipt_screen.dart';
 import 'package:quick_pay/Screens/receipt_status_screen.dart';
 import 'package:quick_pay/Theme/assets.dart';
@@ -34,10 +37,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EducationFeesScreen extends StatefulWidget {
   final Student student;
+  final int selectedTab;
 
   const EducationFeesScreen({
     Key? key,
     required this.student,
+    this.selectedTab = 0,
   }) : super(key: key);
 
   @override
@@ -62,39 +67,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     }
   }
 
-  // String didChangeAppLifecycleState(AppLifecycleState state) {
-  //   setState(() {
-  //     _notification = state;
-  //   });
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       print("app in resumed");
-  //       setState(() {
-  //         Status = 'resumed';
-  //       });
-  //       checkDeepLinkPayment();
-  //       break;
-  //     case AppLifecycleState.inactive:
-  //       print("app in inactive");
-  //       setState(() {
-  //         Status = 'inactive';
-  //       });
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       print("app in paused");
-  //       setState(() {
-  //         Status = 'paused';
-  //       });
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       print("app in detached");
-  //       setState(() {
-  //         Status = 'detached';
-  //       });
-  //       break;
-  //   }
-  // }
-
   late TextEditingController _amountEditingController;
   final _formKey = GlobalKey<FormState>();
 
@@ -109,11 +81,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   bool _isChecked = false;
   bool snapShotDataIsNull = false;
 
-  // late TextEditingController feeEditingController;
-
   num mandatoryFee = 0;
-
-  // num totalFee = 0 + SharedPreferencesController().getTotalFee;
   num totalFee = 0;
   num conveyanceFee = 0;
   bool loading = false;
@@ -140,7 +108,15 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     false,
   ];
 
-  // var _isCheckedArray;
+  List<SubFeeList> mySubFeeList = <SubFeeList>[];
+
+  void printMySubFeeList() {
+    for (int i = 0; i < mySubFeeList.length; i++) {
+      print(
+          'Amount: ${mySubFeeList[i].amount} | ID: ${mySubFeeList[i].subFeeId}');
+    }
+  }
+
 
   @override
   void initState() {
@@ -151,7 +127,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         GetFeeList().getFeeList(context, id: widget.student.studentId);
     _feePayHistoryFuture = FeePayHistoryController()
         .getFeePayHistory(context, id: widget.student.studentId);
-    // feeEditingController = TextEditingController();
   }
 
   @override
@@ -165,6 +140,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
     return DefaultTabController(
+      initialIndex: widget.selectedTab,
       length: 2,
       child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
@@ -173,7 +149,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
                 gradient: linearGrad),
-            // padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: AppBar(
               title: Text(
                 // locale.myOrders!,
@@ -185,10 +160,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
               ),
               bottom: TabBar(
                 indicatorWeight: 4.0,
-                // indicator: ShapeDecoration(
-                //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-                // ),
-                // labelPadding: EdgeInsets.only(bottom: 8, left: 15, right: 15),
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorColor: Theme.of(context).scaffoldBackgroundColor,
                 tabs: [
@@ -262,7 +233,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                         color: Colors.grey.shade300,
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 24, vertical: 16),
+                                            horizontal: 24,
+                                            vertical: 16,
+                                          ),
                                           child: buildItemProperty(
                                             context,
                                             feeFullJson!.notes!,
@@ -278,7 +251,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                   flex: 0,
                                   child: Column(
                                     children: [
-                                      // Expanded(child: Center()),
                                       Container(
                                         color: Colors.white,
                                         width: double.infinity,
@@ -288,8 +260,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
+                                                horizontal: 5,
+                                                vertical: 5,
+                                              ),
                                               child: TextField(
                                                 controller:
                                                     _amountEditingController,
@@ -297,8 +270,10 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                   prefixIcon: Padding(
                                                     padding:
                                                         const EdgeInsetsDirectional
-                                                                .only(
-                                                            start: 14, end: 10),
+                                                            .only(
+                                                      start: 14,
+                                                      end: 10,
+                                                    ),
                                                     child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -403,11 +378,21 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                           if (feeFullJson!.data![i].isMandatory == 1) {
                             print('$i ${feeFullJson!.data![i].fixedFee}');
                             fee += feeFullJson!.data![i].fixedFee!;
+                            mySubFeeList.add(SubFeeList(
+                              amount: feeFullJson!.data![i].fixedFee,
+                              subFeeId: feeFullJson!.data![i].sfeeId,
+                            ));
                           }
                         }
                         mandatoryFee = fee;
                         print('mandatoryFee: $mandatoryFee');
                         print('totalFee: $totalFee');
+                        print(
+                            '-----------------My Sub Fee Items-------------------');
+                        for (int i = 0; i < mySubFeeList.length; i++) {
+                          print(
+                              'Amount: ${mySubFeeList[i].amount} | ID: ${mySubFeeList[i].subFeeId}');
+                        }
                         return Stack(
                           children: [
                             Column(
@@ -469,7 +454,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                               .isMandatory ==
                                                           1) {
                                                         totalFee += 0;
-                                                        // feeEditingController.text = totalFee.toString();
+                                                        printMySubFeeList();
                                                       } else if (_isCheckedList[
                                                               index] ==
                                                           false) {
@@ -480,17 +465,43 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                               feeFullJson!
                                                                   .data![index]
                                                                   .fixedFee!;
+                                                          mySubFeeList
+                                                              .add(SubFeeList(
+                                                            amount: feeFullJson!
+                                                                .data![index]
+                                                                .fixedFee,
+                                                            subFeeId:
+                                                                feeFullJson!
+                                                                    .data![
+                                                                        index]
+                                                                    .sfeeId,
+                                                          ));
                                                         });
-                                                        // feeEditingController.text =
-                                                        //     totalFee.toString();
+                                                        printMySubFeeList();
                                                       } else {
                                                         _isCheckedList[index] =
                                                             false;
-                                                        totalFee -= feeFullJson!
-                                                            .data![index]
-                                                            .fixedFee!;
-                                                        // feeEditingController.text =
-                                                        //     totalFee.toString();
+                                                        setState(() {
+                                                          totalFee -=
+                                                              feeFullJson!
+                                                                  .data![index]
+                                                                  .fixedFee!;
+                                                          mySubFeeList
+                                                              .removeWhere(
+                                                            (element) =>
+                                                                element.subFeeId ==
+                                                                    feeFullJson!
+                                                                        .data![
+                                                                            index]
+                                                                        .sfeeId &&
+                                                                element.amount ==
+                                                                    feeFullJson!
+                                                                        .data![
+                                                                            index]
+                                                                        .fixedFee,
+                                                          );
+                                                        });
+                                                        printMySubFeeList();
                                                       }
                                                     });
                                                   },
@@ -512,15 +523,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                                 FontWeight.bold,
                                                           ),
                                                     ),
-                                                    // SizedBox(
-                                                    //   width: 20,
-                                                    //   height: 20,
-                                                    //   child: Checkbox(
-                                                    //     value: false,
-                                                    //     onChanged: (v){},
-                                                    //     // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    //   ),
-                                                    // ),
                                                   ),
                                                 ),
                                               ),
@@ -853,7 +855,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                              fontSize: 16,
+                                                              fontSize: 15.5,
                                                             ),
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -866,102 +868,96 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                             .textTheme
                                                             .bodyText2!
                                                             .copyWith(
-                                                              fontSize: 16,
+                                                              fontSize: 15.5,
                                                             ),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        overflow:
+                                                            TextOverflow.fade,
                                                       ),
                                                       SizedBox(height: 5),
                                                       Row(
                                                         children: [
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  'Mode: ' +
-                                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].mode}',
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyText2!
-                                                                      .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                SizedBox(
-                                                                    height: 5),
-                                                                Text(
-                                                                  'Rs. ' +
-                                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].amount}',
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyText2!
-                                                                      .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ],
-                                                            ),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                'Mode: ' +
+                                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].mode}',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyText2!
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          16,
+                                                                    ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 5),
+                                                              Text(
+                                                                'Rs. ' +
+                                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].amount}',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyText2!
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
                                                           ),
-                                                          // SizedBox(width: 5),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  'Status: ' +
-                                                                      paymentStatus(
-                                                                          index),
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyText2!
-                                                                      .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                SizedBox(
-                                                                    height: 5),
-                                                                Text(
-                                                                  '${feePayHistory!.feePayHistoryData!.transaction![index].paymentDate}',
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyText2!
-                                                                      .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ],
-                                                            ),
+                                                          SizedBox(width: 45),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                'Status: ' +
+                                                                    paymentStatus(
+                                                                        index),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyText2!
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          15.5,
+                                                                    ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 5),
+                                                              Text(
+                                                                '${feePayHistory!.feePayHistoryData!.transaction![index].paymentDate}',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyText2!
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
                                                           ),
-                                                          // Column(
-                                                          //   crossAxisAlignment: CrossAxisAlignment.start,
-                                                          // ),
                                                         ],
                                                       ),
                                                     ],
@@ -1040,7 +1036,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       print('Total Fee To Send: $totalFeeToSend');
       return totalFeeToSend;
     } else {
-      num totalFeeToSend = num.parse(_amountEditingController.text.toString());
+      num totalFeeToSend = num.parse(_amountEditingController.text.toString()) + num.parse(calcConveyanceFee());
       print('Total Fee To Send (TextEditingController): $totalFeeToSend');
       return totalFeeToSend;
     }
@@ -1059,8 +1055,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       schoolCode: widget.student.school_code,
       studentId: widget.student.studentId,
       orderId: '${generateOrderId()}',
-      subFeeAmount: 1,
-      subFeeId: 1,
+      subFeeList: mySubFeeList,
+      // subFeeAmount: 1,
+      // subFeeId: 1,
     );
     if (initiatePayment != null) {
       print('initiatePayment done');
@@ -1077,11 +1074,11 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     return random;
   }
 
-  String generateOrderId()  {
+  String generateOrderId() {
     String orderId =
         '${widget.student.school_code}_${widget.student.sid}_${randomNumber()}';
     print('Generated Order Id (First Call): $orderId');
-     SharedPreferencesController()
+    SharedPreferencesController()
         .setGeneratedOrderId(generatedOrderId: orderId);
     return orderId;
   }
@@ -1152,7 +1149,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                               ),
                               SizedBox(height: 15),
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PayByCardScreen()));
+                                },
                                 child: Text(
                                   'Debit Card / Credit Card, Net Banking',
                                   style: Theme.of(context)
@@ -1179,16 +1178,22 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Note:\nSample Instructions',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(
-                                            fontSize: 15,
-                                            // fontWeight: FontWeight.bold,
-                                            color: Color(0xffe14942),
-                                          ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Text(
+                                          'Note:\n${feeFullJson!.paymentNote!}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5!
+                                              .copyWith(
+                                                fontSize: 15,
+                                                // fontWeight: FontWeight.bold,
+                                                color: Color(0xffe14942),
+                                              ),
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1243,21 +1248,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
         ),
       ),
     );
-
-    // if (deepLinkPaymentStatusData.length == 0) {
-    //   print('cancelled'.toUpperCase());
-    // } else if (deepLinkPaymentStatusData[0]!.status == 'SUCCESS' ||
-    //     deepLinkPaymentStatusData[0]!.status == 'SUCCESS'.toLowerCase()) {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ReceiptStatusScreen(),
-    //     ),
-    //   );
-    // } else if (deepLinkPaymentStatusData[0]!.status == 'FAILED' ||
-    //     deepLinkPaymentStatusData[0]!.status == 'FAILED'.toLowerCase()) {
-    //   print('FAILED');
-    // }
   }
 
   Future<void> upiPaymentOption() async {

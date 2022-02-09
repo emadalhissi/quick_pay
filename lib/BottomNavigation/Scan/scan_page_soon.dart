@@ -1,6 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:quick_pay/BottomNavigation/bottom_navigation.dart';
 import 'package:quick_pay/Components/entry_field.dart';
 import 'package:quick_pay/Locale/locales.dart';
 import 'package:quick_pay/Theme/colors.dart';
@@ -14,33 +15,35 @@ class _ScanQRPageSoonState extends State<ScanQRPageSoon> {
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        leading: SizedBox.shrink(),
-        leadingWidth: 0,
-        title: Text(
-          'Scan',
-          style: Theme.of(context)
-              .textTheme
-              .subtitle1!
-              .copyWith(fontWeight: FontWeight.w700, fontSize: 20),
-        ),
-        iconTheme: IconThemeData(color: blackColor),
-      ),
-      body: FadedSlideAnimation(
-        Center(
-          child: Text(
-            'Update Soon',
+    return WillPopScope(
+      onWillPop: () async => await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppNavigation(),)) ?? null,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+
+          title: Text(
+            'Scan',
             style: Theme.of(context)
                 .textTheme
                 .subtitle1!
-                .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                .copyWith(fontWeight: FontWeight.w700, fontSize: 20),
           ),
+          iconTheme: IconThemeData(color: blackColor),
         ),
-        beginOffset: Offset(0, 0.3),
-        endOffset: Offset(0, 0),
-        slideCurve: Curves.linearToEaseOut,
+        body: FadedSlideAnimation(
+          Center(
+            child: Text(
+              'Update Soon',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ),
+          beginOffset: Offset(0, 0.3),
+          endOffset: Offset(0, 0),
+          slideCurve: Curves.linearToEaseOut,
+        ),
       ),
     );
   }
