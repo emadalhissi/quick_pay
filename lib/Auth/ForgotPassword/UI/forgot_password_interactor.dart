@@ -1,3 +1,0 @@
-class ForgotPasswordInteractor {
-  void forgotPassword() {}
-}
