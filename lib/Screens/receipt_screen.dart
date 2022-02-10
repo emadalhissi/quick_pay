@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quick_pay/API/Controllers/Fee%20Full%20Process/Fee%20History/download_receipt_controller.dart';
 import 'package:quick_pay/Models/api_models/download_receipt.dart';
-import 'package:quick_pay/Screens/pdf_test_screen.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -86,11 +85,6 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
   late DownloadReceipt? receipt;
   late Future<DownloadReceipt?> _receiptFuture;
-
-  // bool downloading = true;
-  // String downloadingStr = "No data";
-  // double download = 0.0;
-  // File? file;
 
   @override
   void initState() {

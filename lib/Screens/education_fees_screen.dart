@@ -53,6 +53,7 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     with ApiHelper, WidgetsBindingObserver {
   late AppLifecycleState _notification;
   String Status = '';
+  bool clicked = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -63,7 +64,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     }
     if (state == AppLifecycleState.resumed) {
       print('+++++++++++++++resumed+++++++++++++++');
-      checkDeepLinkPayment();
+      if (clicked == true) {
+        checkDeepLinkPayment();
+      }
     }
   }
 
@@ -117,7 +120,6 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -139,147 +141,456 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
   @override
   Widget build(BuildContext context) {
     var locale = AppLocalizations.of(context)!;
-    return DefaultTabController(
-      initialIndex: widget.selectedTab,
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: PreferredSize(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
-                gradient: linearGrad),
-            child: AppBar(
-              title: Text(
-                // locale.myOrders!,
-                'Education Fees',
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    fontSize: 20),
-              ),
-              bottom: TabBar(
-                indicatorWeight: 4.0,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorColor: Theme.of(context).scaffoldBackgroundColor,
-                tabs: [
-                  Tab(
-                    text: 'Fee Details',
-                  ),
-                  Tab(
-                    text: 'Transaction Details',
-                  ),
+    return WillPopScope(
+      onWillPop: () async =>
+          await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AppNavigation(),
+              )) ??
+          null,
+      child: DefaultTabController(
+        initialIndex: widget.selectedTab,
+        length: 2,
+        child: Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          appBar: PreferredSize(
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(8)),
+                  gradient: linearGrad),
+              child: AppBar(
+                title: Text(
+                  // locale.myOrders!,
+                  'Education Fees',
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      fontSize: 20),
+                ),
+                bottom: TabBar(
+                  indicatorWeight: 4.0,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                  tabs: [
+                    Tab(
+                      text: 'Fee Details',
+                    ),
+                    Tab(
+                      text: 'Transaction Details',
+                    ),
+                  ],
+                ),
+                actions: [
+                  // PopupMenuButton<String>(
+                  //   itemBuilder: (context) {
+                  //     return myMenuItems.map((String string) {
+                  //       return PopupMenuItem<String>(
+                  //         child: Text(string),
+                  //         value: string,
+                  //       );
+                  //     }).toList();
+                  //   },
+                  // ),
+                  // GestureDetector(
+                  //   onTap: () {},
+                  //   child: Image.asset(
+                  //     'assets/icons/ic_search_wt.png',
+                  //     width: 20,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  //   child: GestureDetector(
+                  //     onTap: () {},
+                  //     child: Image.asset(
+                  //       'assets/icons/ic_cart_wt.png',
+                  //       width: 20,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
-              actions: [
-                // PopupMenuButton<String>(
-                //   itemBuilder: (context) {
-                //     return myMenuItems.map((String string) {
-                //       return PopupMenuItem<String>(
-                //         child: Text(string),
-                //         value: string,
-                //       );
-                //     }).toList();
-                //   },
-                // ),
-                // GestureDetector(
-                //   onTap: () {},
-                //   child: Image.asset(
-                //     'assets/icons/ic_search_wt.png',
-                //     width: 20,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                //   child: GestureDetector(
-                //     onTap: () {},
-                //     child: Image.asset(
-                //       'assets/icons/ic_cart_wt.png',
-                //       width: 20,
-                //     ),
-                //   ),
-                // ),
-              ],
             ),
+            preferredSize: Size(MediaQuery.of(context).size.width, 110.0),
           ),
-          preferredSize: Size(MediaQuery.of(context).size.width, 110.0),
-        ),
-        body: TabBarView(
-          children: [
-            Container(
-              color: Theme.of(context).backgroundColor,
-              child: FadedSlideAnimation(
-                FutureBuilder<FeeFullJson?>(
-                  future: _feeFullJsonFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.data != null) {
-                      feeFullJson = snapshot.data;
-                      if (feeFullJson!.data!.length == 0) {
-                        print('length = 0');
-                        snapShotDataIsNull = true;
-                        return Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: ListView(
-                                    children: [
-                                      Material(
-                                        elevation: 0.5,
-                                        color: Colors.grey.shade300,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                            vertical: 16,
-                                          ),
-                                          child: buildItemProperty(
-                                            context,
-                                            feeFullJson!.notes!,
-                                            SizedBox.shrink(),
-                                            SizedBox.shrink(),
+          body: TabBarView(
+            children: [
+              Container(
+                color: Theme.of(context).backgroundColor,
+                child: FadedSlideAnimation(
+                  FutureBuilder<FeeFullJson?>(
+                    future: _feeFullJsonFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.data != null) {
+                        feeFullJson = snapshot.data;
+                        if (feeFullJson!.data!.length == 0) {
+                          print('length = 0');
+                          snapShotDataIsNull = true;
+                          return Stack(
+                            children: [
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: ListView(
+                                      children: [
+                                        Material(
+                                          elevation: 0.5,
+                                          color: Colors.grey.shade300,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                              vertical: 16,
+                                            ),
+                                            child: buildItemProperty(
+                                              context,
+                                              feeFullJson!.notes!,
+                                              SizedBox.shrink(),
+                                              SizedBox.shrink(),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 0,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        color: Colors.white,
-                                        width: double.infinity,
-                                        // height: 50,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 5,
-                                                vertical: 5,
-                                              ),
-                                              child: TextField(
-                                                controller:
-                                                    _amountEditingController,
-                                                decoration: InputDecoration(
-                                                  prefixIcon: Padding(
-                                                    padding:
-                                                        const EdgeInsetsDirectional
-                                                            .only(
-                                                      start: 14,
-                                                      end: 10,
+                                  Expanded(
+                                    flex: 0,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          // height: 50,
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 5,
+                                                  vertical: 5,
+                                                ),
+                                                child: TextField(
+                                                  controller:
+                                                      _amountEditingController,
+                                                  decoration: InputDecoration(
+                                                    prefixIcon: Padding(
+                                                      padding:
+                                                          const EdgeInsetsDirectional
+                                                              .only(
+                                                        start: 14,
+                                                        end: 10,
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            '₹',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline5!
+                                                                .copyWith(
+                                                                  fontSize: 19,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
+                                                    prefixStyle:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1!
+                                                            .copyWith(),
+                                                    contentPadding:
+                                                        EdgeInsetsDirectional
+                                                            .only(start: 12),
+                                                    hintText: 'Enter Amount',
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      borderSide: BorderSide(
+                                                        color: Colors.black,
+                                                        width: 1.5,
+                                                      ),
+                                                    ),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      borderSide: BorderSide(
+                                                        color: Colors.black,
+                                                        width: 1.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Conveyance Fee: ' +
+                                                    calcConveyanceFee(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5!
+                                                    .copyWith(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              SizedBox(height: 7),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 5),
+                                                child: MyCustomButton(
+                                                  'PAY NOW',
+                                                  onTap: () async {
+                                                    await performPayNow();
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              loading == true
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    )
+                                  : SizedBox.shrink(),
+                            ],
+                          );
+                        } else {
+                          snapShotDataIsNull = false;
+                          num fee = 0;
+                          for (int i = 0; i < feeFullJson!.data!.length; i++) {
+                            if (feeFullJson!.data![i].isMandatory == 1) {
+                              print('$i ${feeFullJson!.data![i].fixedFee}');
+                              fee += feeFullJson!.data![i].fixedFee!;
+                              mySubFeeList.add(SubFeeList(
+                                amount: feeFullJson!.data![i].fixedFee,
+                                subFeeId: feeFullJson!.data![i].sfeeId,
+                              ));
+                            }
+                          }
+                          mandatoryFee = fee;
+                          print('mandatoryFee: $mandatoryFee');
+                          print('totalFee: $totalFee');
+                          print(
+                              '-----------------My Sub Fee Items-------------------');
+                          for (int i = 0; i < mySubFeeList.length; i++) {
+                            print(
+                                'Amount: ${mySubFeeList[i].amount} | ID: ${mySubFeeList[i].subFeeId}');
+                          }
+                          return Stack(
+                            children: [
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: ListView(
+                                      children: [
+                                        // Container(),
+                                        Material(
+                                          elevation: 0.5,
+                                          color: Colors.grey.shade300,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 24, vertical: 16),
+                                            child: buildItemProperty(
+                                              context,
+                                              feeFullJson!.notes!,
+                                              SizedBox.shrink(),
+                                              SizedBox.shrink(),
+                                            ),
+                                          ),
+                                        ),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: BouncingScrollPhysics(),
+                                          padding:
+                                              EdgeInsets.symmetric(vertical: 5),
+                                          itemCount: feeFullJson!.data!.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 5),
+                                              child: Material(
+                                                elevation: 0.8,
+                                                child: Padding(
+                                                  padding: EdgeInsets.zero,
+                                                  child: CheckboxListTile(
+                                                    activeColor: feeFullJson!
+                                                                .data![index]
+                                                                .isMandatory ==
+                                                            1
+                                                        ? Color(0xffbdbdbd)
+                                                        : Color(0xff1976d3),
+                                                    tristate: true,
+                                                    value: feeFullJson!
+                                                                .data![index]
+                                                                .isMandatory ==
+                                                            1
+                                                        ? true
+                                                        : _isCheckedList[index],
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        // _isCheckedList[index] =
+                                                        //     !_isCheckedList[index];
+                                                        if (feeFullJson!
+                                                                .data![index]
+                                                                .isMandatory ==
+                                                            1) {
+                                                          totalFee += 0;
+                                                          printMySubFeeList();
+                                                        } else if (_isCheckedList[
+                                                                index] ==
+                                                            false) {
+                                                          _isCheckedList[
+                                                              index] = true;
+                                                          setState(() {
+                                                            totalFee +=
+                                                                feeFullJson!
+                                                                    .data![
+                                                                        index]
+                                                                    .fixedFee!;
+                                                            mySubFeeList
+                                                                .add(SubFeeList(
+                                                              amount:
+                                                                  feeFullJson!
+                                                                      .data![
+                                                                          index]
+                                                                      .fixedFee,
+                                                              subFeeId:
+                                                                  feeFullJson!
+                                                                      .data![
+                                                                          index]
+                                                                      .sfeeId,
+                                                            ));
+                                                          });
+                                                          printMySubFeeList();
+                                                        } else {
+                                                          _isCheckedList[
+                                                              index] = false;
+                                                          setState(() {
+                                                            totalFee -=
+                                                                feeFullJson!
+                                                                    .data![
+                                                                        index]
+                                                                    .fixedFee!;
+                                                            mySubFeeList
+                                                                .removeWhere(
+                                                              (element) =>
+                                                                  element.subFeeId ==
+                                                                      feeFullJson!
+                                                                          .data![
+                                                                              index]
+                                                                          .sfeeId &&
+                                                                  element.amount ==
+                                                                      feeFullJson!
+                                                                          .data![
+                                                                              index]
+                                                                          .fixedFee,
+                                                            );
+                                                          });
+                                                          printMySubFeeList();
+                                                        }
+                                                      });
+                                                    },
+                                                    title: myBuildItemProperty(
+                                                      context,
+                                                      feeFullJson!
+                                                          .data![index].subFee!,
+                                                      // 'fed',
+                                                      Text(
+                                                        feeFullJson!
+                                                            .data![index]
+                                                            .fixedFee
+                                                            .toString(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline5!
+                                                            .copyWith(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 0,
+                                    child: Column(
+                                      children: [
+                                        // Expanded(child: Center()),
+                                        Container(
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          // height: 50,
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 5),
+                                                child: Container(
+                                                  height: 48,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                      color: Colors.black,
+                                                      width: 1.5,
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsetsDirectional
+                                                                    .only(
+                                                                start: 15,
+                                                                top: 5),
+                                                        child: Text(
                                                           '₹',
                                                           style:
                                                               Theme.of(context)
@@ -293,707 +604,430 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                                                             .bold,
                                                                   ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  prefixStyle: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .copyWith(),
-                                                  contentPadding:
-                                                      EdgeInsetsDirectional
-                                                          .only(start: 12),
-                                                  hintText: 'Enter Amount',
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    borderSide: BorderSide(
-                                                      color: Colors.black,
-                                                      width: 1.5,
-                                                    ),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    borderSide: BorderSide(
-                                                      color: Colors.black,
-                                                      width: 1.5,
-                                                    ),
-                                                  ),
-                                                ),
-                                                keyboardType:
-                                                    TextInputType.number,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              'Conveyance Fee: ' +
-                                                  calcConveyanceFee(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5!
-                                                  .copyWith(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            SizedBox(height: 7),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                              child: MyCustomButton(
-                                                'PAY NOW',
-                                                onTap: () async {
-                                                  await performPayNow();
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            loading == true
-                                ? Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  )
-                                : SizedBox.shrink(),
-                          ],
-                        );
-                      } else {
-                        snapShotDataIsNull = false;
-                        num fee = 0;
-                        for (int i = 0; i < feeFullJson!.data!.length; i++) {
-                          if (feeFullJson!.data![i].isMandatory == 1) {
-                            print('$i ${feeFullJson!.data![i].fixedFee}');
-                            fee += feeFullJson!.data![i].fixedFee!;
-                            mySubFeeList.add(SubFeeList(
-                              amount: feeFullJson!.data![i].fixedFee,
-                              subFeeId: feeFullJson!.data![i].sfeeId,
-                            ));
-                          }
-                        }
-                        mandatoryFee = fee;
-                        print('mandatoryFee: $mandatoryFee');
-                        print('totalFee: $totalFee');
-                        print(
-                            '-----------------My Sub Fee Items-------------------');
-                        for (int i = 0; i < mySubFeeList.length; i++) {
-                          print(
-                              'Amount: ${mySubFeeList[i].amount} | ID: ${mySubFeeList[i].subFeeId}');
-                        }
-                        return Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: ListView(
-                                    children: [
-                                      // Container(),
-                                      Material(
-                                        elevation: 0.5,
-                                        color: Colors.grey.shade300,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 24, vertical: 16),
-                                          child: buildItemProperty(
-                                            context,
-                                            feeFullJson!.notes!,
-                                            SizedBox.shrink(),
-                                            SizedBox.shrink(),
-                                          ),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 5),
-                                        itemCount: feeFullJson!.data!.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 5),
-                                            child: Material(
-                                              elevation: 0.8,
-                                              child: Padding(
-                                                padding: EdgeInsets.zero,
-                                                child: CheckboxListTile(
-                                                  activeColor: feeFullJson!
-                                                              .data![index]
-                                                              .isMandatory ==
-                                                          1
-                                                      ? Color(0xffbdbdbd)
-                                                      : Color(0xff1976d3),
-                                                  tristate: true,
-                                                  value: feeFullJson!
-                                                              .data![index]
-                                                              .isMandatory ==
-                                                          1
-                                                      ? true
-                                                      : _isCheckedList[index],
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      // _isCheckedList[index] =
-                                                      //     !_isCheckedList[index];
-                                                      if (feeFullJson!
-                                                              .data![index]
-                                                              .isMandatory ==
-                                                          1) {
-                                                        totalFee += 0;
-                                                        printMySubFeeList();
-                                                      } else if (_isCheckedList[
-                                                              index] ==
-                                                          false) {
-                                                        _isCheckedList[index] =
-                                                            true;
-                                                        setState(() {
-                                                          totalFee +=
-                                                              feeFullJson!
-                                                                  .data![index]
-                                                                  .fixedFee!;
-                                                          mySubFeeList
-                                                              .add(SubFeeList(
-                                                            amount: feeFullJson!
-                                                                .data![index]
-                                                                .fixedFee,
-                                                            subFeeId:
-                                                                feeFullJson!
-                                                                    .data![
-                                                                        index]
-                                                                    .sfeeId,
-                                                          ));
-                                                        });
-                                                        printMySubFeeList();
-                                                      } else {
-                                                        _isCheckedList[index] =
-                                                            false;
-                                                        setState(() {
-                                                          totalFee -=
-                                                              feeFullJson!
-                                                                  .data![index]
-                                                                  .fixedFee!;
-                                                          mySubFeeList
-                                                              .removeWhere(
-                                                            (element) =>
-                                                                element.subFeeId ==
-                                                                    feeFullJson!
-                                                                        .data![
-                                                                            index]
-                                                                        .sfeeId &&
-                                                                element.amount ==
-                                                                    feeFullJson!
-                                                                        .data![
-                                                                            index]
-                                                                        .fixedFee,
-                                                          );
-                                                        });
-                                                        printMySubFeeList();
-                                                      }
-                                                    });
-                                                  },
-                                                  title: myBuildItemProperty(
-                                                    context,
-                                                    feeFullJson!
-                                                        .data![index].subFee!,
-                                                    // 'fed',
-                                                    Text(
-                                                      feeFullJson!
-                                                          .data![index].fixedFee
-                                                          .toString(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline5!
-                                                          .copyWith(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 0,
-                                  child: Column(
-                                    children: [
-                                      // Expanded(child: Center()),
-                                      Container(
-                                        color: Colors.white,
-                                        width: double.infinity,
-                                        // height: 50,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                              child: Container(
-                                                height: 48,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  border: Border.all(
-                                                    color: Colors.black,
-                                                    width: 1.5,
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsetsDirectional
-                                                                  .only(
-                                                              start: 15,
-                                                              top: 5),
-                                                      child: Text(
-                                                        '₹',
+                                                      ),
+                                                      SizedBox(width: 17),
+                                                      Text(
+                                                        (totalFee +
+                                                                mandatoryFee)
+                                                            .toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .headline5!
                                                             .copyWith(
-                                                              fontSize: 19,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                             ),
                                                       ),
-                                                    ),
-                                                    SizedBox(width: 17),
-                                                    Text(
-                                                      (totalFee + mandatoryFee)
-                                                          .toString(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline5!
-                                                          .copyWith(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              'Conveyance Fee: ' +
-                                                  calcConveyanceFee(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5!
-                                                  .copyWith(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            SizedBox(height: 7),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                              child: MyCustomButton(
-                                                'PAY NOW',
-                                                onTap: () async {
-                                                  await performPayNow();
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            loading == true
-                                ? Container(
-                                    height: MediaQuery.of(context).size.height,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  )
-                                : SizedBox.shrink(),
-                          ],
-                        );
-                      }
-                    } else {
-                      return Center(
-                        child: Text(
-                          'NO DATA',
-                          style:
-                              Theme.of(context).textTheme.headline5!.copyWith(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                beginOffset: Offset(0, 0.3),
-                endOffset: Offset(0, 0),
-                slideCurve: Curves.linearToEaseOut,
-              ),
-            ),
-            Container(
-              color: Theme.of(context).backgroundColor,
-              child: FadedSlideAnimation(
-                FutureBuilder<FeePayHistory?>(
-                  future: _feePayHistoryFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.data != null) {
-                      feePayHistory = snapshot.data;
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            // flex: 3,
-                            child: ListView(
-                              children: [
-                                Container(
-                                  child: Material(
-                                    elevation: 1.5,
-                                    color: Colors.grey.shade300,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 16),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Total Fee ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                              Text(
-                                                'Paid ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                              Text(
-                                                'Balance ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                ': ${feePayHistory!.feePayHistoryData!.fixedFee}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                              Text(
-                                                ': ${feePayHistory!.feePayHistoryData!.paidFee}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                              Text(
-                                                ': ${feePayHistory!.feePayHistoryData!.balance}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      fontSize: 14,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/icons/ic_printer.png'),
-                                              ),
-                                            ),
-                                          ),
-                                          // SizedBox.shrink(
-                                          //   child: Image.asset(
-                                          //     'assets/icons/ic_printer.png',
-                                          //     width: MediaQuery.of(context).size.width,
-                                          //     // fit: BoxFit.fill,
-                                          //     scale: 1,
-                                          //   ),
-                                          // ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.only(top: 8),
-                                  itemCount: feePayHistory!
-                                      .feePayHistoryData!.transaction!.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 8),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ReceiptScreen(
-                                                orderId:
-                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
-                                                sid:
-                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].studentId}',
-                                                transactionId:
-                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].transactionId}',
-                                              ),
-                                            ),
-                                          );
-                                          print('history clicked');
-                                        },
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              50,
-                                          // height: 160,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey[300]!,
-                                                spreadRadius: 0.6,
-                                                blurRadius: 0.6,
-                                                offset: Offset.fromDirection(
-                                                    0.75, 2.0),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 20,
-                                              right: 10,
-                                              top: 10,
-                                              bottom: 10,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        'Ref. No. : ' +
-                                                            '${feePayHistory!.feePayHistoryData!.transaction![index].transactionId}',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2!
-                                                            .copyWith(
-                                                              fontSize: 15.5,
-                                                            ),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        'Order No. : ' +
-                                                            '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2!
-                                                            .copyWith(
-                                                              fontSize: 15.5,
-                                                            ),
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Row(
-                                                        children: [
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                'Mode: ' +
-                                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].mode}',
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyText2!
-                                                                    .copyWith(
-                                                                      fontSize:
-                                                                          16,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 5),
-                                                              Text(
-                                                                'Rs. ' +
-                                                                    '${feePayHistory!.feePayHistoryData!.transaction![index].amount}',
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyText2!
-                                                                    .copyWith(
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(width: 45),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                'Status: ' +
-                                                                    paymentStatus(
-                                                                        index),
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyText2!
-                                                                    .copyWith(
-                                                                      fontSize:
-                                                                          15.5,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 5),
-                                                              Text(
-                                                                '${feePayHistory!.feePayHistoryData!.transaction![index].paymentDate}',
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyText2!
-                                                                    .copyWith(
-                                                                      fontSize:
-                                                                          14,
-                                                                    ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
                                                     ],
                                                   ),
                                                 ),
-                                                Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  color: Color(0xff737373),
-                                                  size: 36,
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Conveyance Fee: ' +
+                                                    calcConveyanceFee(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5!
+                                                    .copyWith(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              SizedBox(height: 7),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 5),
+                                                child: MyCustomButton(
+                                                  'PAY NOW',
+                                                  onTap: () async {
+                                                    await performPayNow();
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              loading == true
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    )
+                                  : SizedBox.shrink(),
+                            ],
+                          );
+                        }
+                      } else {
+                        return Center(
+                          child: Text(
+                            'NO DATA',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  beginOffset: Offset(0, 0.3),
+                  endOffset: Offset(0, 0),
+                  slideCurve: Curves.linearToEaseOut,
+                ),
+              ),
+              Container(
+                color: Theme.of(context).backgroundColor,
+                child: FadedSlideAnimation(
+                  FutureBuilder<FeePayHistory?>(
+                    future: _feePayHistoryFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.data != null) {
+                        feePayHistory = snapshot.data;
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              // flex: 3,
+                              child: ListView(
+                                children: [
+                                  Container(
+                                    child: Material(
+                                      elevation: 1.5,
+                                      color: Colors.grey.shade300,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 16),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Total Fee ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  'Paid ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  'Balance ',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  ': ${feePayHistory!.feePayHistoryData!.fixedFee}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  ': ${feePayHistory!.feePayHistoryData!.paidFee}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  ': ${feePayHistory!.feePayHistoryData!.balance}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                            Spacer(),
+                                            Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      'assets/icons/ic_printer.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            // SizedBox.shrink(
+                                            //   child: Image.asset(
+                                            //     'assets/icons/ic_printer.png',
+                                            //     width: MediaQuery.of(context).size.width,
+                                            //     // fit: BoxFit.fill,
+                                            //     scale: 1,
+                                            //   ),
+                                            // ),
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
-                              ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.only(top: 8),
+                                    itemCount: feePayHistory!
+                                        .feePayHistoryData!.transaction!.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ReceiptScreen(
+                                                  orderId:
+                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
+                                                  sid:
+                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].studentId}',
+                                                  transactionId:
+                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].transactionId}',
+                                                ),
+                                              ),
+                                            );
+                                            print('history clicked');
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                50,
+                                            // height: 160,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey[300]!,
+                                                  spreadRadius: 0.6,
+                                                  blurRadius: 0.6,
+                                                  offset: Offset.fromDirection(
+                                                      0.75, 2.0),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 10,
+                                                top: 10,
+                                                bottom: 10,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'Ref. No. : ' +
+                                                              '${feePayHistory!.feePayHistoryData!.transaction![index].transactionId}',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText2!
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        15.5,
+                                                                  ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          'Order No. : ' +
+                                                              '${feePayHistory!.feePayHistoryData!.transaction![index].orderId}',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText2!
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        15.5,
+                                                                  ),
+                                                          overflow:
+                                                              TextOverflow.fade,
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  'Mode: ' +
+                                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].mode}',
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2!
+                                                                      .copyWith(
+                                                                        fontSize:
+                                                                            16,
+                                                                      ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                                SizedBox(
+                                                                    height: 5),
+                                                                Text(
+                                                                  'Rs. ' +
+                                                                      '${feePayHistory!.feePayHistoryData!.transaction![index].amount}',
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2!
+                                                                      .copyWith(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(width: 45),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  'Status: ' +
+                                                                      paymentStatus(
+                                                                          index),
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2!
+                                                                      .copyWith(
+                                                                        fontSize:
+                                                                            15.5,
+                                                                      ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                                SizedBox(
+                                                                    height: 5),
+                                                                Text(
+                                                                  '${feePayHistory!.feePayHistoryData!.transaction![index].paymentDate}',
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2!
+                                                                      .copyWith(
+                                                                        fontSize:
+                                                                            14,
+                                                                      ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    color: Color(0xff737373),
+                                                    size: 36,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(
-                        child: Text('NO DATA'),
-                      );
-                    }
-                  },
+                          ],
+                        );
+                      } else {
+                        return Center(
+                          child: Text('NO DATA'),
+                        );
+                      }
+                    },
+                  ),
+                  beginOffset: Offset(0, 0.3),
+                  endOffset: Offset(0, 0),
+                  slideCurve: Curves.linearToEaseOut,
                 ),
-                beginOffset: Offset(0, 0.3),
-                endOffset: Offset(0, 0),
-                slideCurve: Curves.linearToEaseOut,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1036,7 +1070,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
       print('Total Fee To Send: $totalFeeToSend');
       return totalFeeToSend;
     } else {
-      num totalFeeToSend = num.parse(_amountEditingController.text.toString()) + num.parse(calcConveyanceFee());
+      num totalFeeToSend = num.parse(_amountEditingController.text.toString()) +
+          num.parse(calcConveyanceFee());
       print('Total Fee To Send (TextEditingController): $totalFeeToSend');
       return totalFeeToSend;
     }
@@ -1124,6 +1159,9 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
+                                  setState(() {
+                                    clicked = true;
+                                  });
                                   Navigator.pop(context);
                                   await upiPaymentOption();
                                 },
@@ -1150,7 +1188,11 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                               SizedBox(height: 15),
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PayByCardScreen()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PayByCardScreen()));
                                 },
                                 child: Text(
                                   'Debit Card / Credit Card, Net Banking',
@@ -1180,7 +1222,8 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                                   children: [
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
                                         child: Text(
                                           'Note:\n${feeFullJson!.paymentNote!}',
                                           style: Theme.of(context)

@@ -70,30 +70,33 @@ class _AppNavigationState extends State<AppNavigation> {
           ),
           label: locale.account),
     ];
-    return Scaffold(
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 10,
-        showUnselectedLabels: true,
-        selectedItemColor: Theme.of(context).primaryColorLight,
-        unselectedItemColor: blackColor,
-        // selectedIconTheme: IconThemeData(color: blackColor),
-        // unselectedIconTheme: IconThemeData(color: blackColor),
-        items: _items,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 2) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ScanQRPageSoon(),
-                ));
-          }
-          setState(() {
-            _currentIndex = index != 2 ? index : _currentIndex;
-            // _currentIndex = index;
-          });
-        },
+    return WillPopScope(
+      onWillPop: () async => await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppNavigation(),)) ?? null,
+      child: Scaffold(
+        body: _children[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          elevation: 10,
+          showUnselectedLabels: true,
+          selectedItemColor: Theme.of(context).primaryColorLight,
+          unselectedItemColor: blackColor,
+          // selectedIconTheme: IconThemeData(color: blackColor),
+          // unselectedIconTheme: IconThemeData(color: blackColor),
+          items: _items,
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            if (index == 2) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScanQRPageSoon(),
+                  ));
+            }
+            setState(() {
+              _currentIndex = index != 2 ? index : _currentIndex;
+              // _currentIndex = index;
+            });
+          },
+        ),
       ),
     );
   }
