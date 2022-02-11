@@ -1189,10 +1189,11 @@ class _EducationFeesScreenState extends State<EducationFeesScreen>
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PayByCardScreen()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PayByCardScreen()),
+                                  );
                                 },
                                 child: Text(
                                   'Debit Card / Credit Card, Net Banking',
